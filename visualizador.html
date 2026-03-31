@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Score - Ranking Maui</title>
+    <style>
+        :root {
+            --bg: #020617;
+            --card: #1e293b;
+            --accent: #bef264;
+            --text: #f8fafc;
+            --subtext: #94a3b8;
+            --danger: #fb7185;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .scoreboard {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .header {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--subtext);
+            padding: 0 5px;
+        }
+
+        .category-badge {
+            background: var(--accent);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .match-content { 
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .players-section { flex: 1; }
+
+        .player-row {
+            display: grid;
+            grid-template-columns: 30px 1fr 60px 40px;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .player-row:last-child { margin-bottom: 0; }
+
+        .serve-indicator {
+            font-size: 1.2rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .serve-active { opacity: 1; animation: pulse 1.5s infinite; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        .player-name { font-size: 1.4rem; font-weight: 600; }
+        .game-score { font-size: 2.2rem; font-weight: 800; color: var(--accent); text-align: right; font-family: monospace; }
+        .set-score { font-size: 1.4rem; color: var(--text); text-align: center; font-weight: bold; background: rgba(255,255,255,0.05); border-radius: 4px; }
+
+        .games-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            padding-left: 20px;
+            height: 100px;
+        }
+
+        .game-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--subtext);
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1;
+        }
+
+        .stats-container {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .stat-title {
+            color: var(--subtext);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-comparison {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .match-footer {
+            margin-top: 30px;
+            color: var(--subtext);
+            font-size: 0.85rem;
+            text-align: center;
+            padding-bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .status-badge { color: var(--accent); font-weight: bold; }
+
+        /* ESTILO DO BOTÃO DASHBOARD */
+        .btn-dashboard {
+            display: none; /* Inicialmente escondido */
+            margin-top: 20px;
+            background: var(--accent);
+            color: #020617;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(190, 242, 100, 0.2);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-dashboard:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(190, 242, 100, 0.3);
+            background: #d4ff7a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scoreboard">
+        <div class="header">
+            <span class="category-badge" id="v-cat">CARREGANDO...</span>
+            <div class="info-row">
+                <div>Hora Local: <span id="v-clock" style="color: var(--accent);">00:00</span></div>
+                <div>Duração: <span id="v-duration" style="color: var(--accent);">00:00:00</span></div>
+            </div>
+        </div>
+
+        <div class="match-content">
+            <div class="players-section">
+                <div class="player-row">
+                    <div class="serve-indicator" id="s1">🎾</div>
+                    <div class="player-name" id="n1">JOGADOR 1</div>
+                    <div class="game-score" id="p1">0</div>
+                    <div class="set-score" id="sets1">0</div>
+                </div>
+                <div class="player-row">
+                    <div class="serve-indicator" id="s2">🎾</div>
+                    <div class="player-name" id="n2">JOGADOR 2</div>
+                    <div class="game-score" id="p2">0</div>
+                    <div class="set-score" id="sets2">0</div>
+                </div>
+            </div>
+            <div class="games-column">
+                <div id="v-g1" class="game-number">0</div>
+                <div id="v-g2" class="game-number">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <span class="stat-title">Pontos na Rede (V/P)</span>
+            <div class="stat-comparison"><span id="st-rede1">0/0</span><span id="st-rede2">0/0</span></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">Aces</span>
+            <div class="stat-comparison"><span id="st-ace1">0</span><span id="st-ace2">0</span></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">Duplas Faltas</span>
+            <div class="stat-comparison"><span id="st-df1">0</span><span id="st-df2">0</span></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">Winners (Fh/Bh)</span>
+            <div class="stat-comparison"><span id="st-win1">0/0</span><span id="st-win2">0/0</span></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">Erros NF (Fh/Bh)</span>
+            <div class="stat-comparison"><span id="st-enf1">0/0</span><span id="st-enf2">0/0</span></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">Total de Pontos</span>
+            <div class="stat-comparison"><span id="st-total1">0</span><span id="st-total2">0</span></div>
+        </div>
+    </div>
+
+    <div class="match-footer">
+        <div>Situação: <span class="status-badge" id="v-status">AQUECENDO</span></div>
+        <span id="v-win" style="color: #fff; font-weight: 900; font-size: 1.2rem; margin-top: 10px;"></span>
+        
+        <a href="relatorio.html" id="btn-dashboard" class="btn-dashboard" target="_blank">
+            Gráficos da Partida
+        </a>
+    </div>
+
+<script>
+    const DB_URL = "https://rodrigoteste-1df63-default-rtdb.firebaseio.com/match.json";
+    const labels = [0, 15, 30, 40, "AD"];
+
+    function formatTime(seconds) {
+        let h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+        let min = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+        let s = Math.floor(seconds % 60).toString().padStart(2, '0');
+        return `${h}:${min}:${s}`;
+    }
+
+    async function update() {
+        const agora = new Date();
+        document.getElementById('v-clock').innerText = agora.getHours().toString().padStart(2, '0') + ":" + agora.getMinutes().toString().padStart(2, '0');
+
+        try {
+            const response = await fetch(DB_URL);
+            const m = await response.json();
+            if (!m) return;
+
+            if (m.status === 'Em andamento' && m.startTime) {
+                let diff = Math.floor((Date.now() - m.startTime) / 1000);
+                document.getElementById('v-duration').innerText = formatTime(diff);
+            } else {
+                document.getElementById('v-duration').innerText = m.duration || "00:00:00";
+            }
+
+            document.getElementById('n1').innerText = m.n1.toUpperCase();
+            document.getElementById('n2').innerText = m.n2.toUpperCase();
+            document.getElementById('p1').innerText = m.isTB ? m.p1 : (labels[m.p1] || 0);
+            document.getElementById('p2').innerText = m.isTB ? m.p2 : (labels[m.p2] || 0);
+            document.getElementById('sets1').innerText = m.s1;
+            document.getElementById('sets2').innerText = m.s2;
+            document.getElementById('v-g1').innerText = m.g1;
+            document.getElementById('v-g2').innerText = m.g2;
+            document.getElementById('v-cat').innerText = m.cat;
+            document.getElementById('v-status').innerText = m.status.toUpperCase();
+            document.getElementById('v-win').innerText = m.win ? "VENCEDOR: " + m.win.toUpperCase() : "";
+
+            document.getElementById('s1').className = m.sacador === 1 ? "serve-indicator serve-active" : "serve-indicator";
+            document.getElementById('s2').className = m.sacador === 2 ? "serve-indicator serve-active" : "serve-indicator";
+
+            // Lógica do Botão: Aparece se status for Concluída ou houver vencedor
+            const btn = document.getElementById('btn-dashboard');
+            if (m.status.toLowerCase() === 'concluída' || m.win) {
+                btn.style.display = 'inline-block';
+            } else {
+                btn.style.display = 'none';
+            }
+
+            // Estatísticas
+            document.getElementById('st-rede1').innerText = `${m.stats1.rede || 0}/${m.stats1.rede_err || 0}`;
+            document.getElementById('st-rede2').innerText = `${m.stats2.rede || 0}/${m.stats2.rede_err || 0}`;
+            document.getElementById('st-enf1').innerText = `${m.stats1.enf_fh || 0}/${m.stats1.enf_bh || 0}`;
+            document.getElementById('st-enf2').innerText = `${m.stats2.enf_fh || 0}/${m.stats2.enf_bh || 0}`;
+            document.getElementById('st-ace1').innerText = m.stats1.ace;
+            document.getElementById('st-ace2').innerText = m.stats2.ace;
+            document.getElementById('st-df1').innerText = m.stats1.df || 0;
+            document.getElementById('st-df2').innerText = m.stats2.df || 0;
+            document.getElementById('st-win1').innerText = `${m.stats1.fw}/${m.stats1.bw}`;
+            document.getElementById('st-win2').innerText = `${m.stats2.fw}/${m.stats2.bw}`;
+            document.getElementById('st-total1').innerText = m.stats1.total || 0;
+            document.getElementById('st-total2').innerText = m.stats2.total || 0;
+
+        } catch (e) { console.error("Erro:", e); }
+    }
+
+    setInterval(update, 1000);
+    update();
+</script>
+</body>
+</html>

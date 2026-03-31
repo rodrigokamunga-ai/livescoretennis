@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparativo do Jogo - Ranking Maui</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a; --card: #1e293b; --accent: #bef264;
+            --opponent: #38bdf8; --text: #f8fafc; --subtext: #94a3b8; --border: rgba(255, 255, 255, 0.1);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .report-container { width: 100%; max-width: 1100px; margin: auto; background: var(--card); border-radius: 24px; padding: 30px; border: 1px solid var(--border); }
+        
+        .header-info { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 25px; }
+        .category-badge { background: var(--accent); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: 900; font-size: 0.8rem; text-transform: uppercase; }
+        .info-item { font-size: 0.85rem; font-weight: bold; color: var(--subtext); }
+
+        /* Placar Vertical Sequencial */
+        .scoreboard { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 30px; }
+        .players-header { display: grid; grid-template-columns: 1fr auto 1fr; width: 100%; align-items: center; text-align: center; }
+        .player-name { font-size: 1.6rem; font-weight: 800; text-transform: uppercase; color: var(--text); }
+        .vs-label { font-weight: bold; color: var(--subtext); font-size: 1.2rem; padding: 0 20px; }
+
+        .sets-container { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 400px; margin-top: 10px; }
+        .set-box { display: grid; grid-template-columns: 1fr auto 1fr; background: rgba(15, 23, 42, 0.4); padding: 12px; border-radius: 12px; border: 1px solid var(--border); text-align: center; align-items: center; }
+        .set-num { font-size: 0.7rem; color: var(--subtext); font-weight: bold; text-transform: uppercase; grid-column: 2; margin-bottom: 2px; }
+        .set-score { font-size: 1.8rem; font-weight: 900; color: var(--text); font-family: monospace; }
+        .set-score.active { color: var(--accent); }
+        .stb-score { color: var(--opponent); }
+
+        .charts-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; margin-bottom: 20px; }
+        @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
+        
+        .chart-box { background: rgba(15, 23, 42, 0.5); border-radius: 16px; padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; }
+        .btn-group { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .btn-sel { background: transparent; border: 1px solid var(--border); color: var(--subtext); padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-sel.active { background: var(--accent); color: #000; border-color: var(--accent); }
+        h3 { font-size: 0.8rem; color: var(--subtext); text-transform: uppercase; margin-bottom: 15px; align-self: flex-start; }
+    </style>
+</head>
+<body>
+
+<div class="report-container">
+    <div class="header-info">
+        <div id="v-cat" class="category-badge">CARREGANDO...</div>
+        <div class="info-item">DURAÇÃO: <span id="v-duration" style="color: var(--accent)">00:00:00</span></div>
+    </div>
+
+    <div class="scoreboard">
+        <div class="players-header">
+            <div id="v-n1" class="player-name">JOGADOR 1</div>
+            <div class="vs-label">VS</div>
+            <div id="v-n2" class="player-name">JOGADOR 2</div>
+        </div>
+
+        <div class="sets-container">
+            <div class="set-box">
+                <span id="v-set1-p1" class="set-score">-</span>
+                <span class="set-num">SET 1</span>
+                <span id="v-set1-p2" class="set-score">-</span>
+            </div>
+
+            <div class="set-box">
+                <span id="v-set2-p1" class="set-score">-</span>
+                <span class="set-num">SET 2</span>
+                <span id="v-set2-p2" class="set-score">-</span>
+            </div>
+
+            <div id="box-stb" class="set-box" style="border-color: var(--opponent); background: rgba(56, 189, 248, 0.05);">
+                <span id="v-stb-p1" class="set-score stb-score">-</span>
+                <span class="set-num" style="color: var(--opponent)">SUPER TB</span>
+                <span id="v-stb-p2" class="set-score stb-score">-</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <button id="btn1" class="btn-sel active" onclick="changePlayer(1)">JOGADOR 1</button>
+        <button id="btn2" class="btn-sel" onclick="changePlayer(2)">JOGADOR 2</button>
+    </div>
+
+    <div class="charts-grid">
+        <div class="chart-box">
+            <h3>📊 Comparativo de Performance</h3>
+            <div style="width: 100%; height: 300px;"><canvas id="barChart"></canvas></div>
+        </div>
+
+        <div class="chart-box">
+            <h3 id="pie-title">🍕 Distribuição de Pontos: <span id="total-val" style="color: var(--accent)">0</span></h3>
+            <div style="width: 100%; height: 300px;"><canvas id="pieChart"></canvas></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const DB_URL = "https://rodrigoteste-1df63-default-rtdb.firebaseio.com/match.json";
+    let m = {}; 
+    let currentPlayer = 1;
+    let barChart, pieChart;
+
+    async function fetchData() {
+        try {
+            const response = await fetch(DB_URL);
+            const data = await response.json();
+            if (data) {
+                m = data;
+                updateUI();
+            }
+        } catch (error) {
+            console.error("Erro ao buscar dados:", error);
+        }
+    }
+
+    function changePlayer(p) {
+        currentPlayer = p;
+        updateUI();
+    }
+
+    function updateUI() {
+        document.getElementById('v-cat').innerText = m.cat || "RANKING";
+        document.getElementById('v-duration').innerText = m.duration || "00:00:00";
+        document.getElementById('v-n1').innerText = m.n1 || "P1";
+        document.getElementById('v-n2').innerText = m.n2 || "P2";
+        document.getElementById('btn1').innerText = m.n1 || "P1";
+        document.getElementById('btn2').innerText = m.n2 || "P2";
+
+        // Parciais Set 1
+        if (m.parciais && m.parciais.set1) {
+            const s1 = m.parciais.set1.split('-');
+            document.getElementById('v-set1-p1').innerText = s1[0];
+            document.getElementById('v-set1-p2').innerText = s1[1];
+        }
+
+        // Parciais Set 2
+        if (m.parciais && m.parciais.set2) {
+            const s2 = m.parciais.set2.split('-');
+            document.getElementById('v-set2-p1').innerText = s2[0];
+            document.getElementById('v-set2-p2').innerText = s2[1];
+        }
+
+        // Lógica do Super Tie-break (STB)
+        let showSTB = false;
+        if (m.parciais && m.parciais.stb) {
+            const stb = m.parciais.stb.split('-');
+            document.getElementById('v-stb-p1').innerText = stb[0];
+            document.getElementById('v-stb-p2').innerText = stb[1];
+            showSTB = true;
+        } else if (m.isTB && (m.s1 + m.s2 >= 1)) {
+            document.getElementById('v-stb-p1').innerText = m.p1;
+            document.getElementById('v-stb-p2').innerText = m.p2;
+            showSTB = true;
+        } else if (m.s1 + m.s2 === 3 || (m.s1 + m.s2 === 2 && m.isTB)) {
+            document.getElementById('v-stb-p1').innerText = m.p1;
+            document.getElementById('v-stb-p2').innerText = m.p2;
+            showSTB = true;
+        }
+
+        // Esconde ou mostra o box do STB dependendo se houve 3º set
+        document.getElementById('box-stb').style.display = showSTB ? 'grid' : 'none';
+
+        document.getElementById('btn1').classList.toggle('active', currentPlayer === 1);
+        document.getElementById('btn2').classList.toggle('active', currentPlayer === 2);
+
+        const s = currentPlayer === 1 ? m.stats1 : m.stats2;
+        const opp = currentPlayer === 1 ? m.stats2 : m.stats1;
+        const sName = currentPlayer === 1 ? m.n1 : m.n2;
+
+        if (s) {
+            document.getElementById('total-val').innerText = s.total || 0;
+            renderBar(s, opp, sName);
+            renderPie(s);
+        }
+    }
+
+    function renderBar(s, opp, sName) {
+        const ctx = document.getElementById('barChart').getContext('2d');
+        if (barChart) barChart.destroy();
+        barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Winners', 'Aces', 'Rede', 'Erros NF', 'Total Ptos'],
+                datasets: [
+                    { label: sName, data: [(s.fw + s.bw), s.ace, s.rede, s.enf, s.total], backgroundColor: '#bef264', borderRadius: 5 },
+                    { label: 'Oponente', data: [(opp.fw + opp.bw), opp.ace, opp.rede, opp.enf, opp.total], backgroundColor: '#38bdf8', borderRadius: 5 }
+                ]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                    x: { grid: { display: false }, ticks: { color: '#fff' } }
+                }
+            }
+        });
+    }
+
+    function renderPie(s) {
+        const ctx = document.getElementById('pieChart').getContext('2d');
+        if (pieChart) pieChart.destroy();
+        pieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Winner FH', 'Winner BH', 'Aces', 'Pto Rede', 'Erros NF'],
+                datasets: [{
+                    data: [s.fw || 0, s.bw || 0, s.ace || 0, s.rede || 0, s.enf || 0],
+                    backgroundColor: ['#bef264', '#84cc16', '#38bdf8', '#a78bfa', '#fb7185'],
+                    borderWidth: 0, hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { color: '#fff', padding: 20, font: { size: 10 } } } },
+                cutout: '70%'
+            }
+        });
+    }
+
+    setInterval(fetchData, 3000);
+    fetchData();
+</script>
+</body>
+</html>

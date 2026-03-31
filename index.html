@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle - Ranking Maui</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #bef264;
+            --text: #f8fafc;
+            --subtext: #94a3b8;
+            --danger: #fb7185;
+        }
+
+        body {
+            font-family: system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .player-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        input[type="text"],
+        select {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #334155;
+            color: white;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        select {
+            background: #1e293b;
+            color: var(--accent);
+            cursor: pointer;
+            padding-bottom: 5px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .score-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent);
+            font-family: monospace;
+        }
+
+        .btn-add {
+            background: var(--accent);
+            border: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .serve-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .serve-selector input {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-sec {
+            background: transparent;
+            border: 1px solid #444;
+            color: #94a3b8;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            color: var(--subtext);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+            margin-top: 15px;
+        }
+
+        /* Grid de estatísticas ajustado para suportar os novos botões */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .btn-stat {
+            background: #334155;
+            border: 1px solid #475569;
+            color: white;
+            border-radius: 4px;
+            padding: 8px 2px;
+            font-size: 0.65rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 35px;
+        }
+
+        .btn-stat:active:not(:disabled) {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .btn-stat:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
+        .btn-view-link {
+            text-decoration: none;
+            display: block;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2 style="color:var(--accent); margin-top:0; margin-bottom: 5px;">Live Score Maui</h2>
+
+        <span class="section-label">Selecione a Categoria</span>
+        <select id="cat" onchange="sync()">
+            <option value="Grand Slam">Grand Slam</option>
+            <option value="Master 1000">Master 1000</option>
+            <option value="ATP 500">ATP 500</option>
+            <option value="ATP 250" selected>ATP 250</option>
+        </select>
+
+        <span class="section-label">Situação da Partida</span>
+        <div class="actions">
+            <button class="btn-sec" onclick="setPartida('Em andamento')" style="color: var(--accent)">INICIAR /
+                REINICIAR</button>
+            <button class="btn-sec" onclick="setPartida('Suspensa')" style="color: #f59e0b">INTERROMPER</button>
+            
+            <button class="btn-sec" onclick="setPartida('Concluída')" style="color: #ef4444; grid-column: span 1;">ENCERRAR
+                PARTIDA</button>
+
+            <button class="btn-sec" onclick="reset()" style="color:#00fbff">NOVO JOGO</button>
+            
+            
+            
+        </div>
+
+        <div class="player-box" style="margin-top: 15px;">
+            <input type="text" id="n1" value="Jogador 1" onchange="sync()">
+            <div class="controls">
+                <span class="score-display" id="p1_label">0</span>
+                <button class="btn-add" onclick="addPoint(1)">+</button>
+            </div>
+            <div class="stats-grid">
+                <button class="btn-stat" onclick="addPoint(1, 'fw')">Forehand Winner</button>
+                <button class="btn-stat" onclick="addPoint(1, 'bw')">Backhand Winner</button>
+                <button class="btn-stat" onclick="addPoint(1, 'rede_win')" style="color: var(--accent);">Ponto na
+                    Rede</button>
+                <button class="btn-stat" onclick="addPoint(1, 'rede_err')" style="color: var(--danger);">Erro na
+                    Rede</button>
+                <button class="btn-stat" onclick="addPoint(1, 'enf_fh')" style="color: #03d855;">Erro NF
+                    Forehand</button>
+                <button class="btn-stat" onclick="addPoint(1, 'enf_bh')" style="color: #03d855;">Erro NF
+                    Backhand</button>
+                <button class="btn-stat serve-j1" onclick="addPoint(1, 'df')" style="color: #fb7185;">Dupla
+                    Falta</button>
+                <button class="btn-stat serve-j1" onclick="addPoint(1, 'ace')">ACE</button>
+            </div>
+        </br>
+            <button class="btn-sec" onclick="undo()">DESFAZER</button>
+            <label class="serve-selector">
+                <input type="radio" name="sacador" value="1" onchange="sync()" id="s1"> SAQUE 🎾
+            </label>
+        </div>
+
+        <div class="player-box">
+            <input type="text" id="n2" value="Jogador 2" onchange="sync()">
+            <div class="controls">
+                <span class="score-display" id="p2_label">0</span>
+                <button class="btn-add" onclick="addPoint(2)">+</button>
+            </div>
+            <div class="stats-grid">
+                <button class="btn-stat" onclick="addPoint(2, 'fw')">Forehand Winner</button>
+                <button class="btn-stat" onclick="addPoint(2, 'bw')">Backhand Winner</button>
+                <button class="btn-stat" onclick="addPoint(2, 'rede_win')" style="color: var(--accent);">Ponto na
+                    Rede</button>
+                <button class="btn-stat" onclick="addPoint(2, 'rede_err')" style="color: var(--danger);">Erro na
+                    Rede</button>
+                <button class="btn-stat" onclick="addPoint(2, 'enf_fh')" style="color: #03d855;">Erro NF
+                    Forehand</button>
+                <button class="btn-stat" onclick="addPoint(2, 'enf_bh')" style="color: #03d855;">Erro NF
+                    Backhand</button>
+                <button class="btn-stat serve-j2" onclick="addPoint(2, 'df')" style="color: #fb7185;">Dupla
+                    Falta</button>
+                <button class="btn-stat serve-j2" onclick="addPoint(2, 'ace')">ACE</button>
+            </div>
+        </br>
+        <button class="btn-sec" onclick="undo()">DESFAZER</button>
+            <label class="serve-selector">
+                <input type="radio" name="sacador" value="2" onchange="sync()" id="s2"> SAQUE 🎾
+            </label>
+        </div>
+
+        <div style="margin: 10px 0; font-weight: bold; font-size: 0.9rem; color: var(--subtext);">
+            SETS: <span id="s1_val" style="color:var(--accent)">0</span> — <span id="s2_val"
+                style="color:var(--accent)">0</span>
+            <span style="margin-left: 15px; color: #fff;">GAMES: <span id="g1">0</span>—<span id="g2">0</span></span>
+        </div>
+        <div id="status"
+            style="color:var(--accent); font-size:0.8rem; min-height: 45px; line-height: 1.4; border-top: 1px solid #334155; padding-top: 5px;">
+            Carregando...</div>
+
+
+
+        <a href="visualizador.html" target="_blank" class="btn-view-link">
+            <button class="btn-sec" style="color:#448bef; border-color:#448bef"> ABRIR VISUALIZADOR</button>
+        </a>
+    </div>
+
+    <script>
+        const DB_URL = "https://rodrigoteste-1df63-default-rtdb.firebaseio.com/match.json";
+
+        // Estrutura inicial expandida para as novas estatísticas
+        let m = {
+            n1: "J1", n2: "J2", p1: 0, p2: 0, g1: 0, g2: 0, s1: 0, s2: 0,
+            stats1: { fw: 0, bw: 0, rede: 0, rede_err: 0, enf: 0, enf_fh: 0, enf_bh: 0, df: 0, ace: 0, total: 0 },
+            stats2: { fw: 0, bw: 0, rede: 0, rede_err: 0, enf: 0, enf_fh: 0, enf_bh: 0, df: 0, ace: 0, total: 0 },
+            isTB: false, win: "", cat: "ATP 250", sacador: 1,
+            status: "Não iniciada", startTime: null, duration: "00:00:00", history: [],
+            parciais: { set1: "", set2: "", stb: "" }
+        };
+        const labels = [0, 15, 30, 40, "AD"];
+
+        async function sync() {
+            m.n1 = document.getElementById('n1').value;
+            m.n2 = document.getElementById('n2').value;
+            m.cat = document.getElementById('cat').value;
+            const r1 = document.getElementById('s1').checked;
+            const r2 = document.getElementById('s2').checked;
+            m.sacador = r1 ? 1 : (r2 ? 2 : 0);
+
+            await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(m) });
+            updateUI();
+        }
+
+        function setPartida(estado) {
+            m.status = estado;
+            if ((estado === 'Em andamento') && !m.startTime) m.startTime = Date.now();
+            if (estado === 'Concluída' && !m.win) {
+                m.win = m.s1 > m.s2 ? m.n1 : (m.s2 > m.s1 ? m.n2 : "Empate");
+            }
+            sync();
+        }
+
+        function addPoint(p, statType = null) {
+            if (m.status === 'Concluída' || m.win) return;
+            m.history.push(JSON.stringify({ ...m, history: [] }));
+
+            let quemGanhaOPonto = p;
+
+            if (statType) {
+                const stCometeu = p === 1 ? m.stats1 : m.stats2;
+
+                // Lógica para Erros Não Forçados (Total + Específico)
+                if (statType === 'enf_fh' || statType === 'enf_bh') {
+                    stCometeu[statType]++;
+                    stCometeu.enf++; // Mantém o total para o visualizador
+                    quemGanhaOPonto = (p === 1) ? 2 : 1;
+                }
+                // Lógica para Rede
+                else if (statType === 'rede_win') {
+                    stCometeu.rede++;
+                }
+                else if (statType === 'rede_err') {
+                    stCometeu.rede_err++;
+                    quemGanhaOPonto = (p === 1) ? 2 : 1;
+                }
+                // Lógica padrão (Aces, Winners, etc)
+                else {
+                    if (stCometeu.hasOwnProperty(statType)) stCometeu[statType]++;
+                    if (statType === 'enf' || statType === 'df') quemGanhaOPonto = (p === 1) ? 2 : 1;
+                }
+
+                const stVencedor = quemGanhaOPonto === 1 ? m.stats1 : m.stats2;
+                stVencedor.total++;
+            } else {
+                const stVencedor = p === 1 ? m.stats1 : m.stats2;
+                stVencedor.total++;
+            }
+
+            // Lógica de Pontuação (Games/Sets/TB)
+            if (m.isTB) {
+                if (quemGanhaOPonto === 1) m.p1++; else m.p2++;
+                let target = (m.cat === "Grand Slam" && m.s1 === 1 && m.s2 === 1) ? 10 : 7;
+                if (m.p1 >= target && m.p1 - m.p2 >= 2) finalizeSet(1);
+                else if (m.p2 >= target && m.p2 - m.p1 >= 2) finalizeSet(2);
+            } else {
+                const s = quemGanhaOPonto === 1 ? 'p1' : 'p2';
+                const o = quemGanhaOPonto === 1 ? 'p2' : 'p1';
+
+                if (m.cat === "Grand Slam") {
+                    if (m[s] < 3) m[s]++;
+                    else winGame(quemGanhaOPonto);
+                } else {
+                    if (m[s] < 3) m[s]++;
+                    else if (m[s] === 3) {
+                        if (m[o] === 3) m[s] = 4;
+                        else if (m[o] === 4) m[o] = 3;
+                        else winGame(quemGanhaOPonto);
+                    } else winGame(quemGanhaOPonto);
+                }
+            }
+            sync();
+        }
+
+        function winGame(p) {
+            m.p1 = 0; m.p2 = 0;
+            if (p === 1) m.g1++; else m.g2++;
+            m.sacador = m.sacador === 1 ? 2 : 1;
+            if (m.g1 === 6 && m.g2 === 6) m.isTB = true;
+            else if ((m.g1 >= 6 && m.g1 - m.g2 >= 2) || m.g1 === 7) finalizeSet(1);
+            else if ((m.g2 >= 6 && m.g2 - m.g1 >= 2) || m.g2 === 7) finalizeSet(2);
+        }
+
+        function finalizeSet(p) {
+            const placarSet = `${m.g1}-${m.g2}`;
+            if (m.s1 + m.s2 === 0) m.parciais.set1 = placarSet;
+            else if (m.s1 + m.s2 === 1) m.parciais.set2 = placarSet;
+            if (p === 1) m.s1++; else m.s2++;
+            if (m.cat === "Grand Slam") {
+                if (m.s1 === 1 && m.s2 === 1) { novoSet(); m.isTB = true; }
+                else if (m.s1 === 2 || m.s2 === 2) { m.win = p === 1 ? m.n1 : m.n2; m.status = "Concluída"; }
+                else { novoSet(); }
+            } else {
+                m.win = p === 1 ? m.n1 : m.n2;
+                m.status = "Concluída";
+            }
+        }
+
+        function novoSet() { m.g1 = 0; m.g2 = 0; m.p1 = 0; m.p2 = 0; m.isTB = false; }
+
+        function updateUI() {
+            document.getElementById('p1_label').innerText = m.isTB ? m.p1 : (labels[m.p1] || 0);
+            document.getElementById('p2_label').innerText = m.isTB ? m.p2 : (labels[m.p2] || 0);
+            document.getElementById('g1').innerText = m.g1;
+            document.getElementById('g2').innerText = m.g2;
+            document.getElementById('s1_val').innerText = m.s1;
+            document.getElementById('s2_val').innerText = m.s2;
+            document.getElementById('cat').value = m.cat;
+            document.getElementById('s1').checked = (m.sacador === 1);
+            document.getElementById('s2').checked = (m.sacador === 2);
+
+            const btsJ1 = document.querySelectorAll('.serve-j1');
+            const btsJ2 = document.querySelectorAll('.serve-j2');
+            btsJ1.forEach(btn => btn.disabled = (m.sacador !== 1));
+            btsJ2.forEach(btn => btn.disabled = (m.sacador !== 2));
+
+            let modo = m.isTB ? "TIE-BREAK" : "Set Normal";
+            document.getElementById('status').innerHTML = `
+            Modo: ${modo} | Duração: ${m.duration}<br>
+            Pontos T.: ${m.n1}: ${m.stats1.total} | ${m.n2}: ${m.stats2.total}<br>
+            Situação: ${m.status} ${m.win ? '- Vencedor: ' + m.win : ''}
+        `;
+        }
+
+        setInterval(() => {
+            if (m.status === 'Em andamento' && m.startTime) {
+                let diff = Math.floor((Date.now() - m.startTime) / 1000);
+                let h = Math.floor(diff / 3600).toString().padStart(2, '0');
+                let min = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+                let s = Math.floor(diff % 60).toString().padStart(2, '0');
+                m.duration = `${h}:${min}:${s}`;
+                updateUI();
+            }
+        }, 1000);
+
+        function undo() {
+            if (m.history.length > 0) { m = JSON.parse(m.history.pop()); sync(); }
+        }
+
+        function reset() {
+            if (confirm("Deseja zerar a partida?")) {
+                m = {
+                    n1: m.n1, n2: m.n2, p1: 0, p2: 0, g1: 0, g2: 0, s1: 0, s2: 0,
+                    stats1: { fw: 0, bw: 0, rede: 0, rede_err: 0, enf: 0, enf_fh: 0, enf_bh: 0, df: 0, ace: 0, total: 0 },
+                    stats2: { fw: 0, bw: 0, rede: 0, rede_err: 0, enf: 0, enf_fh: 0, enf_bh: 0, df: 0, ace: 0, total: 0 },
+                    isTB: false, win: "", cat: m.cat, sacador: 1, status: "Não iniciada", startTime: null, duration: "00:00:00", history: [],
+                    parciais: { set1: "", set2: "", stb: "" }
+                };
+                sync();
+            }
+        }
+        fetch(DB_URL).then(r => r.json()).then(data => { if (data) { m = data; updateUI(); } });
+    </script>
+</body>
+
+</html>
