@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle - Ranking Maui</title>
+    <title>Controle - Live Score Tennis</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -209,26 +209,14 @@
                 <span class="score-display" id="p1_label">0</span>
                 <button class="btn-add" onclick="addPoint(1)">+</button>
             </div>
-            <div class="stats-grid">
-                <button class="btn-stat" onclick="addPoint(1, 'fw')">Forehand Winner</button>
-                <button class="btn-stat" onclick="addPoint(1, 'bw')">Backhand Winner</button>
-                <button class="btn-stat" onclick="addPoint(1, 'rede_win')" style="color: var(--accent);">Ponto na
-                    Rede</button>
-                <button class="btn-stat" onclick="addPoint(1, 'rede_err')" style="color: var(--danger);">Erro na
-                    Rede</button>
-                <button class="btn-stat" onclick="addPoint(1, 'enf_fh')" style="color: #03d855;">Erro NF
-                    Forehand</button>
-                <button class="btn-stat" onclick="addPoint(1, 'enf_bh')" style="color: #03d855;">Erro NF
-                    Backhand</button>
-                <button class="btn-stat serve-j1" onclick="addPoint(1, 'df')" style="color: #fb7185;">Dupla
-                    Falta</button>
-                <button class="btn-stat serve-j1" onclick="addPoint(1, 'ace')">ACE</button>
-            </div>
+            
         </br>
-            <button class="btn-sec" onclick="undo()">DESFAZER</button>
+            
             <label class="serve-selector">
                 <input type="radio" name="sacador" value="1" onchange="sync()" id="s1"> SAQUE 🎾
             </label>
+        </br>
+            <button class="btn-sec" onclick="undo()">DESFAZER PONTO</button>
         </div>
 
         <div class="player-box">
@@ -237,26 +225,14 @@
                 <span class="score-display" id="p2_label">0</span>
                 <button class="btn-add" onclick="addPoint(2)">+</button>
             </div>
-            <div class="stats-grid">
-                <button class="btn-stat" onclick="addPoint(2, 'fw')">Forehand Winner</button>
-                <button class="btn-stat" onclick="addPoint(2, 'bw')">Backhand Winner</button>
-                <button class="btn-stat" onclick="addPoint(2, 'rede_win')" style="color: var(--accent);">Ponto na
-                    Rede</button>
-                <button class="btn-stat" onclick="addPoint(2, 'rede_err')" style="color: var(--danger);">Erro na
-                    Rede</button>
-                <button class="btn-stat" onclick="addPoint(2, 'enf_fh')" style="color: #03d855;">Erro NF
-                    Forehand</button>
-                <button class="btn-stat" onclick="addPoint(2, 'enf_bh')" style="color: #03d855;">Erro NF
-                    Backhand</button>
-                <button class="btn-stat serve-j2" onclick="addPoint(2, 'df')" style="color: #fb7185;">Dupla
-                    Falta</button>
-                <button class="btn-stat serve-j2" onclick="addPoint(2, 'ace')">ACE</button>
-            </div>
+           
         </br>
-        <button class="btn-sec" onclick="undo()">DESFAZER</button>
+        
             <label class="serve-selector">
                 <input type="radio" name="sacador" value="2" onchange="sync()" id="s2"> SAQUE 🎾
             </label>
+        </br>
+            <button class="btn-sec" onclick="undo()">DESFAZER PONTO</button>
         </div>
 
         <div style="margin: 10px 0; font-weight: bold; font-size: 0.9rem; color: var(--subtext);">
