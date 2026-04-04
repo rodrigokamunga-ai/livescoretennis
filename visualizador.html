@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Score - Tennis</title>
+    <title>Live Score - Tênis</title>
     <style>
         :root {
             --bg: #020617;
@@ -206,12 +206,14 @@
                 <div class="player-row">
                     <div class="serve-indicator" id="s1">🎾</div>
                     <div class="player-name" id="n1">JOGADOR 1</div>
+                    
                     <div class="set-score" id="sets1">0</div>
                     <div class="game-score" id="p1">0</div>
                 </div>
                 <div class="player-row">
                     <div class="serve-indicator" id="s2">🎾</div>
                     <div class="player-name" id="n2">JOGADOR 2</div>
+                    
                     <div class="set-score" id="sets2">0</div>
                     <div class="game-score" id="p2">0</div>
                 </div>
@@ -223,7 +225,31 @@
         </div>
     </div>
 
-   
+    <div class="stats-container">
+        <div class="stat-card">
+            <span class="stat-title">Pontos na Rede (Vencidos/Perdidos)</span>
+            <div class="stat-comparison"><span id="st-rede1">0/0</span><span id="st-rede2">0/0</span></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">Aces</span>
+            <div class="stat-comparison"><span id="st-ace1">0</span><span id="st-ace2">0</span></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">Duplas Faltas</span>
+            <div class="stat-comparison"><span id="st-df1">0</span><span id="st-df2">0</span></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">Winners (Fh/Bh)</span>
+            <div class="stat-comparison"><span id="st-win1">0/0</span><span id="st-win2">0/0</span></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">Erros Não Forçados (Fh/Bh)</span>
+            <div class="stat-comparison"><span id="st-enf1">0/0</span><span id="st-enf2">0/0</span></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">Total de Pontos</span>
+            <div class="stat-comparison"><span id="st-total1">0</span><span id="st-total2">0</span></div>
+        </div>
     </div>
 
     <div class="match-footer">
@@ -277,7 +303,14 @@
             document.getElementById('s1').className = m.sacador === 1 ? "serve-indicator serve-active" : "serve-indicator";
             document.getElementById('s2').className = m.sacador === 2 ? "serve-indicator serve-active" : "serve-indicator";
 
-           
+            // Lógica do Botão: Aparece se status for Concluída ou houver vencedor
+            const btn = document.getElementById('btn-dashboard');
+            if (m.status.toLowerCase() === 'concluída' || m.win) {
+                btn.style.display = 'inline-block';
+            } else {
+                btn.style.display = 'none';
+            }
+
             // Estatísticas
             document.getElementById('st-rede1').innerText = `${m.stats1.rede || 0}/${m.stats1.rede_err || 0}`;
             document.getElementById('st-rede2').innerText = `${m.stats2.rede || 0}/${m.stats2.rede_err || 0}`;
