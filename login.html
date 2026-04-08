@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Controlador</title>
+  <style> :root { --bg: #07111f; --bg-2: #0b1729; --panel: rgba(15, 25, 43, 0.92); --text: #ecf4ff; --muted: #8fa4be; --accent: #bef264; --danger: #fb7185; --shadow: 0 20px 45px rgba(0,0,0,0.42); } * { box-sizing: border-box; } body { margin: 0; min-height: 100vh; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--text); background: radial-gradient(circle at top, #153154 0%, transparent 35%), radial-gradient(circle at 85% 10%, rgba(190,242,100,0.14), transparent 30%), linear-gradient(180deg, var(--bg-2), var(--bg)); display: flex; align-items: center; justify-content: center; padding: 16px; } .login-box { width: 100%; max-width: 420px; background: var(--panel); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; box-shadow: var(--shadow); padding: 24px; backdrop-filter: blur(12px); } h1 { margin: 0 0 8px; font-size: 1.4rem; font-weight: 900; color: #fff; text-align: center; } p { margin: 0 0 20px; text-align: center; color: var(--muted); font-size: 0.92rem; line-height: 1.4; } .field { margin-bottom: 14px; } label { display: block; margin-bottom: 6px; font-size: 0.82rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; } input { width: 100%; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: var(--text); border-radius: 14px; padding: 13px 14px; font-size: 1rem; outline: none; } input:focus { border-color: rgba(190,242,100,0.32); box-shadow: 0 0 0 3px rgba(190,242,100,0.10); } .btn { width: 100%; border: 1px solid rgba(190,242,100,0.28); background: linear-gradient(180deg, rgba(190,242,100,0.22), rgba(190,242,100,0.12)); color: var(--accent); border-radius: 14px; padding: 13px 14px; font-size: 0.95rem; font-weight: 900; cursor: pointer; transition: 0.18s ease; } .btn:hover { transform: translateY(-1px); } .error { margin-top: 12px; color: var(--danger); font-size: 0.9rem; font-weight: 700; display: none; text-align: center; } .hint { margin-top: 16px; font-size: 0.82rem; color: var(--muted); text-align: center; } </style>
+</head>
+<body>
+  <div class="login-box">
+    <h1>Acesso ao Controlador</h1>
+    <p>Digite seu login e senha para acessar a tela do controlador.</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="usuario">Login</label>
+        <input type="text" id="usuario" autocomplete="username" placeholder="Digite o login" required />
+      </div>
+
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" autocomplete="current-password" placeholder="Digite a senha" required />
+      </div>
+
+      <button type="submit" class="btn">Entrar</button>
+      <div id="erro" class="error">Login ou senha inválidos.</div>
+    </form>
+
+    <div class="hint">
+      Acesso restrito ao painel de controle.
+    </div>
+  </div>
+
+  <script> const LOGIN_CORRETO = "rodrigo.tennis"; const SENHA_CORRETA = "Tennis@2026"; if (localStorage.getItem("autenticado") === "true") { window.location.href = "index.html"; } const form = document.getElementById("loginForm"); const erro = document.getElementById("erro"); form.addEventListener("submit", function (e) { e.preventDefault(); const usuario = document.getElementById("usuario").value.trim(); const senha = document.getElementById("senha").value.trim(); if (usuario === LOGIN_CORRETO && senha === SENHA_CORRETA) { localStorage.setItem("autenticado", "true"); window.location.href = "index.html"; } else { erro.style.display = "block"; } }); </script>
+
+</body>
+
+  </html>
