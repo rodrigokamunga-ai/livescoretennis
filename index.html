@@ -24,6 +24,12 @@
         </div>
       </div>
 
+      <div class="tabs" role="tablist">
+        <button class="tab-btn" onclick="showView('partida')" id="tab-partida">Partida</button>
+        <button class="tab-btn active" onclick="showView('stats')" id="tab-stats">Estatísticas</button>
+      </div>
+    </div>
+
       <div class="match-summary">
         <div class="summary-card">
           <span class="summary-label">Nome da categoria</span>
@@ -79,11 +85,7 @@
         </div>
       </div>
 
-      <div class="tabs" role="tablist">
-        <button class="tab-btn" onclick="showView('partida')" id="tab-partida">Partida</button>
-        <button class="tab-btn active" onclick="showView('stats')" id="tab-stats">Estatísticas</button>
-      </div>
-    </div>
+      
 
     <div class="content">
       <section class="view active" id="view-stats">
@@ -136,11 +138,11 @@
             <div class="group">
               <div class="group-title">Saque</div>
               <div class="stats-grid">
-                <button class="btn-stat" onclick="marcarServico(1, 1)" style="color:#38bdf8;">1º Serviço</button>
-                <button class="btn-stat" onclick="marcarServico(1, 2)" style="color:#f97316;">2º Serviço</button>
+                <button class="btn-stat" onclick="marcarServico(1, 1)" style="color:#38bdf8;">1º SERVIÇO</button>
+                <button class="btn-stat" onclick="marcarServico(1, 2)" style="color:#f97316;">2º SERVIÇO</button>
                 <button class="btn-stat" onclick="marcarServicoFalha(1, 'out')" style="color:#fb7185;">OUT</button>
                 <button class="btn-stat" onclick="marcarServicoFalha(1, 'net')" style="color:#fb7185;">LET</button>
-                <button class="btn-stat" id="j1_df" onclick="addPoint(1, 'df')" style="color:#fb7185;">Dupla<br>Falta</button>
+                <button class="btn-stat" id="j1_df" onclick="addPoint(1, 'df')" style="color:#fb7185;">DUPLA<br>FALTA</button>
                 <button class="btn-stat" id="j1_ace" onclick="addPoint(1, 'ace')" style="color:#38bdf8;">ACE</button>
               </div>
             </div>
@@ -148,30 +150,30 @@
             <div class="group">
               <div class="group-title">Rede</div>
               <div class="stats-grid">
-                <button class="btn-stat" onclick="addPoint(1, 'rede_win')" style="color:#38bdf8;">Ponto<br>na Rede</button>
-                <button class="btn-stat" onclick="addPoint(1, 'rede_err')" style="color: var(--danger);">Erro<br>na Rede</button>
+                <button class="btn-stat" onclick="addPoint(1, 'rede_win')" style="color:#38bdf8;">PONTO<br>NA REDE</button>
+                <button class="btn-stat" onclick="addPoint(1, 'rede_err')" style="color: var(--danger);">ERRO<br>NA REDE</button>
               </div>
             </div>
 
             <div class="group">
               <div class="group-title">Winner / Erros</div>
               <div class="stats-grid">
-                <button class="btn-stat" onclick="addPoint(1, 'fw')" style="color:#38bdf8;">Forehand<br>Winner</button>
-                <button class="btn-stat" onclick="addPoint(1, 'bw')" style="color:#38bdf8;">Backhand<br>Winner</button>
-                <button class="btn-stat" onclick="addPoint(1, 'enf_fh')" style="color:#fb7185;">Forehand<br>Erro Não Forçado</button>
-                <button class="btn-stat" onclick="addPoint(1, 'enf_bh')" style="color:#fb7185;">Backhand<br>Erro Não Forçado</button>
-                <button class="btn-stat" onclick="addPoint(1, 'ef')" style="color:#fb7185;">Erro<br>Forçado</button>
-                <button class="btn-stat" onclick="addPoint(1)" style="color:#38bdf8;">+ Ponto<br>Normal</button>
+                <button class="btn-stat" onclick="addPoint(1, 'fw')" style="color:#38bdf8;">FOREHAND<br>WINNER</button>
+                <button class="btn-stat" onclick="addPoint(1, 'bw')" style="color:#38bdf8;">BACKHAND<br>WINNER</button>
+                <button class="btn-stat" onclick="addPoint(1, 'enf_fh')" style="color:#fb7185;">FOREHAND<br>ERRO NÃO<br> FORÇADO</button>
+                <button class="btn-stat" onclick="addPoint(1, 'enf_bh')" style="color:#fb7185;">BACKHAND<br>ERRO NÃO<br> FORÇADO</button>
+                <button class="btn-stat" onclick="addPoint(1, 'ef')" style="color:#fb7185;">ERRO<br>FORÇADO</button>
+                <button class="btn-stat" onclick="addPoint(1)" style="color:#38bdf8;">+ PONTO<br>NORMAL</button>
               </div>
             </div>
 
             <div class="group">
               <div class="group-title">Devolução / Base</div>
               <div class="stats-grid">
-                <button class="btn-stat" id="j1_ponto_devolucao" onclick="addPoint(1, 'ponto_devolucao')" style="color:#38bdf8;">Ponto de<br>Devolução</button>
-                <button class="btn-stat" id="j1_erro_devolucao" onclick="addPoint(1, 'erro_devolucao')" style="color:#fb7185;">Erro de<br>Devolução</button>
-                <button class="btn-stat" onclick="addPoint(1, 'erro_linha_base')" style="color:#fb7185;">Erro da<br>Linha de Base</button>
-                <button class="btn-stat" onclick="addPoint(1, 'ponto_linha_base')" style="color:#38bdf8;">Ponto da<br>Linha de Base</button>
+                <button class="btn-stat" id="j1_ponto_devolucao" onclick="addPoint(1, 'ponto_devolucao')" style="color:#38bdf8;">PONTO DE<br>DEVOLUÇÃO</button>
+                <button class="btn-stat" id="j1_erro_devolucao" onclick="addPoint(1, 'erro_devolucao')" style="color:#fb7185;">ERRO DE<br>DEVOLUÇÃO</button>
+                <button class="btn-stat" onclick="addPoint(1, 'erro_linha_base')" style="color:#fb7185;">ERRO DA<br>LINHA DE BASE</button>
+                <button class="btn-stat" onclick="addPoint(1, 'ponto_linha_base')" style="color:#38bdf8;">PONTO DA<br>LINHA DE BASE</button>
               </div>
             </div>
           </div>
@@ -185,11 +187,11 @@
             <div class="group">
               <div class="group-title">Saque</div>
               <div class="stats-grid">
-                <button class="btn-stat" onclick="marcarServico(2, 1)" style="color:#38bdf8;">1º Serviço</button>
-                <button class="btn-stat" onclick="marcarServico(2, 2)" style="color:#f97316;">2º Serviço</button>
+                <button class="btn-stat" onclick="marcarServico(2, 1)" style="color:#38bdf8;">1º SERVIÇO</button>
+                <button class="btn-stat" onclick="marcarServico(2, 2)" style="color:#f97316;">2º SERVIÇO</button>
                 <button class="btn-stat" onclick="marcarServicoFalha(2, 'out')" style="color:#fb7185;">OUT</button>
                 <button class="btn-stat" onclick="marcarServicoFalha(2, 'net')" style="color:#fb7185;">LET</button>
-                <button class="btn-stat" id="j2_df" onclick="addPoint(2, 'df')" style="color:#fb7185;">Dupla<br>Falta</button>
+                <button class="btn-stat" id="j2_df" onclick="addPoint(2, 'df')" style="color:#fb7185;">DUPLA<br>FALTA</button>
                 <button class="btn-stat" id="j2_ace" onclick="addPoint(2, 'ace')" style="color:#38bdf8;">ACE</button>
               </div>
             </div>
@@ -197,30 +199,30 @@
             <div class="group">
               <div class="group-title">Rede</div>
               <div class="stats-grid">
-                <button class="btn-stat" onclick="addPoint(2, 'rede_win')" style="color:#38bdf8;">Ponto<br>na Rede</button>
-                <button class="btn-stat" onclick="addPoint(2, 'rede_err')" style="color:#fb7185;">Erro<br>na Rede</button>
+                <button class="btn-stat" onclick="addPoint(2, 'rede_win')" style="color:#38bdf8;">PONTO<br>NA REDE</button>
+                <button class="btn-stat" onclick="addPoint(2, 'rede_err')" style="color:#fb7185;">ERRO<br>NA REDE</button>
               </div>
             </div>
 
             <div class="group">
               <div class="group-title">Winner / Erros</div>
               <div class="stats-grid">
-                <button class="btn-stat" onclick="addPoint(2, 'fw')" style="color:#38bdf8;">Forehand<br>Winner</button>
-                <button class="btn-stat" onclick="addPoint(2, 'bw')" style="color:#38bdf8;">Backhand<br>Winner</button>
-                <button class="btn-stat" onclick="addPoint(2, 'enf_fh')" style="color:#fb7185;">Forehand<br>Erro Não Forçado</button>
-                <button class="btn-stat" onclick="addPoint(2, 'enf_bh')" style="color:#fb7185;">Backhand<br>Erro Não Forçado</button>
-                <button class="btn-stat" onclick="addPoint(2, 'ef')" style="color:#fb7185;">Erro<br>Forçado</button>
-                <button class="btn-stat" onclick="addPoint(2)" style="color:#38bdf8;">+ Ponto<br>Normal</button>
+                <button class="btn-stat" onclick="addPoint(2, 'fw')" style="color:#38bdf8;">FOREHAND<br>WINNER</button>
+                <button class="btn-stat" onclick="addPoint(2, 'bw')" style="color:#38bdf8;">BACKHAND<br>WINNER</button>
+                <button class="btn-stat" onclick="addPoint(2, 'enf_fh')" style="color:#fb7185;">FOREHAND<br>ERRO NÃO <br>FORÇADO</button>
+                <button class="btn-stat" onclick="addPoint(2, 'enf_bh')" style="color:#fb7185;">BACKHAND<br>ERRO NÃO <br>FORÇADO</button>
+                <button class="btn-stat" onclick="addPoint(2, 'ef')" style="color:#fb7185;">ERRO<br>FORÇADO</button>
+                <button class="btn-stat" onclick="addPoint(2)" style="color:#38bdf8;">+ PONTO<br>NORMAL</button>
               </div>
             </div>
 
             <div class="group">
               <div class="group-title">Devolução / Base</div>
               <div class="stats-grid">
-                <button class="btn-stat" id="j2_ponto_devolucao" onclick="addPoint(2, 'ponto_devolucao')" style="color:#38bdf8;">Ponto de<br>Devolução</button>
-                <button class="btn-stat" id="j2_erro_devolucao" onclick="addPoint(2, 'erro_devolucao')" style="color:#fb7185;">Erro de<br>Devolução</button>
-                <button class="btn-stat" onclick="addPoint(2, 'erro_linha_base')" style="color:#fb7185;">Erro da<br>Linha de Base</button>
-                <button class="btn-stat" onclick="addPoint(2, 'ponto_linha_base')" style="color:#38bdf8;">Ponto da<br>Linha de Base</button>
+                <button class="btn-stat" id="j2_ponto_devolucao" onclick="addPoint(2, 'ponto_devolucao')" style="color:#38bdf8;">PONTO DE<br>DEVOLUÇÃO</button>
+                <button class="btn-stat" id="j2_erro_devolucao" onclick="addPoint(2, 'erro_devolucao')" style="color:#fb7185;">ERRO DE<br>DEVOLUÇÃO</button>
+                <button class="btn-stat" onclick="addPoint(2, 'erro_linha_base')" style="color:#fb7185;">ERRO DA<br>LINHA DE BASE</button>
+                <button class="btn-stat" onclick="addPoint(2, 'ponto_linha_base')" style="color:#38bdf8;">PONTO DA<br>LINHA DE BASE</button>
               </div>
             </div>
           </div>
@@ -279,6 +281,182 @@
     </div>
   </div>
 
- <script> const DB_URL = "https://rodrigoteste-1df63-default-rtdb.firebaseio.com/match.json"; const labels = [0, 15, 30, 40]; function makeStatsDefaults() { return { fw: 0, bw: 0, rede: 0, rede_err: 0, enf: 0, enf_fh: 0, enf_bh: 0, df: 0, ace: 0, total: 0, primeiro_servico_total: 0, segundo_servico_total: 0, primeiro_servico_vencidos: 0, segundo_servico_vencidos: 0, erro_forcado: 0, erro_devolucao: 0, ponto_devolucao: 0, ponto_linha_base: 0, erro_linha_base: 0, break_won: 0, break_total: 0 }; } let m = { matchId: Date.now(), completedAt: null, pauseStart: null, pausedTotal: 0, n1: "Jogador 1", n2: "Jogador 2", p1: 0, p2: 0, g1: 0, g2: 0, s1: 0, s2: 0, dataPartida: "", categoriaNome: "ATP 250", tipoJogo: "Simples", formatoJogo: "2_sets_adv_3tb10", stats1: makeStatsDefaults(), stats2: makeStatsDefaults(), isTB: false, win: "", sacador: 1, status: "Não iniciada", startTime: null, duration: "00:00:00", history: [], parciais: { set1: "", set2: "", stb: "" }, feedPlacar: { player: 0, text: "", priority: 0 }, feedSaque: { player: 0, text: "", priority: 0 }, feedJ1: { text: "", priority: 0 }, feedJ2: { text: "", priority: 0 }, feedBreak: { text: "", priority: 0 }, feedNoAd: { text: "", priority: 0 }, feedGame: { text: "", priority: 0 }, servicoAtual: 1, statusServico: "1º Serviço" }; const views = ["stats", "partida"]; function showView(view) { views.forEach(v => { const viewEl = document.getElementById(`view-${v}`); const tabEl = document.getElementById(`tab-${v}`); if (viewEl) viewEl.classList.toggle("active", v === view); if (tabEl) tabEl.classList.toggle("active", v === view); }); updateUI(); } function getFormatoConfig() { const f = m.formatoJogo; const config = { bestOfSets: 1, noAd: false, proSet: false, proSetGames: 6, tieBreakAt: 6, finalTBPoints: 7, superTBPoints: 10, decidingSuperTB: false }; switch (f) { case "2_sets_adv_3tb10": config.bestOfSets = 3; config.noAd = false; config.decidingSuperTB = true; config.superTBPoints = 10; break; case "2_sets_noad_3tb10": config.bestOfSets = 3; config.noAd = true; config.decidingSuperTB = true; config.superTBPoints = 10; break; case "1_set_adv_tb10": config.bestOfSets = 1; config.noAd = false; config.tieBreakAt = 6; config.finalTBPoints = 10; break; case "1_set_adv_tb7": config.bestOfSets = 1; config.noAd = false; config.tieBreakAt = 6; config.finalTBPoints = 7; break; case "1_set_noad_tb7": config.bestOfSets = 1; config.noAd = true; config.tieBreakAt = 6; config.finalTBPoints = 7; break; case "1_set_pro_8_adv_tb7": config.bestOfSets = 1; config.noAd = false; config.proSet = true; config.proSetGames = 8; config.tieBreakAt = 7; config.finalTBPoints = 7; break; case "1_set_pro_8_noad_tb7": config.bestOfSets = 1; config.noAd = true; config.proSet = true; config.proSetGames = 8; config.tieBreakAt = 7; config.finalTBPoints = 7; break; } return config; } function isNoAdCategory() { return getFormatoConfig().noAd; } function formatScore(me, other) { if (m.isTB) return me; if (me >= 3 && other >= 3) { if (me === other) return "IGUAIS"; if (isNoAdCategory()) return 40; if (me === other + 1) return "AD"; if (other === me + 1) return "40"; } return labels[me] ?? 0; } function setFeedPlacar(player, text, priority = 1, force = false) { if (force) { m.feedPlacar = { player, text, priority }; return; } if (!m.feedPlacar || !m.feedPlacar.text || (m.feedPlacar.priority || 0) <= priority) { m.feedPlacar = { player, text, priority }; } } function setFeedSaque(player, text, priority = 1, force = false) { if (force) { m.feedSaque = { player, text, priority }; return; } if (!m.feedSaque || !m.feedSaque.text || (m.feedSaque.priority || 0) <= priority) { m.feedSaque = { player, text, priority }; } } function setFeedJ1(text, priority = 1, force = false) { if (force) { m.feedJ1 = { text, priority }; return; } if (!m.feedJ1 || !m.feedJ1.text || (m.feedJ1.priority || 0) <= priority) { m.feedJ1 = { text, priority }; } } function setFeedJ2(text, priority = 1, force = false) { if (force) { m.feedJ2 = { text, priority }; return; } if (!m.feedJ2 || !m.feedJ2.text || (m.feedJ2.priority || 0) <= priority) { m.feedJ2 = { text, priority }; } } function setFeedBreak(text, priority = 1, force = false) { if (force) { m.feedBreak = { text, priority }; return; } if (!m.feedBreak || !m.feedBreak.text || (m.feedBreak.priority || 0) <= priority) { m.feedBreak = { text, priority }; } } function setFeedNoAd(text, priority = 1, force = false) { if (force) { m.feedNoAd = { text, priority }; return; } if (!m.feedNoAd || !m.feedNoAd.text || (m.feedNoAd.priority || 0) <= priority) { m.feedNoAd = { text, priority }; } } function setFeedGame(text, priority = 1, force = false) { if (force) { m.feedGame = { text, priority }; return; } if (!m.feedGame || !m.feedGame.text || (m.feedGame.priority || 0) <= priority) { m.feedGame = { text, priority }; } } function clearFeedPlacar() { m.feedPlacar = { player: 0, text: "", priority: 0 }; } function clearFeedSaque() { m.feedSaque = { player: 0, text: "", priority: 0 }; } function atualizarFeedSaque() { setFeedSaque(m.sacador, `SAQUE 🎾`, 0, true); } function calcularDuracao() { if (!m.startTime) return "00:00:00"; let elapsed = Date.now() - m.startTime - (m.pausedTotal || 0); if (m.status === "Suspensa" && m.pauseStart) { elapsed = m.pauseStart - m.startTime - (m.pausedTotal || 0); } const diff = Math.max(0, Math.floor(elapsed / 1000)); const h = Math.floor(diff / 3600).toString().padStart(2, '0'); const min = Math.floor((diff % 3600) / 60).toString().padStart(2, '0'); const s = Math.floor(diff % 60).toString().padStart(2, '0'); return `${h}:${min}:${s}`; } function isBreakPointFor(player) { if (m.sacador === 0) return false; if (m.sacador === 1 && player === 2) { return (m.p2 === 3 && m.p1 < 3) || (m.p2 === 4 && m.p1 === 3); } if (m.sacador === 2 && player === 1) { return (m.p1 === 3 && m.p2 < 3) || (m.p1 === 4 && m.p2 === 3); } return false; } function isMatchPoint() { if (m.status === 'Concluída' || m.win) return false; const cfg = getFormatoConfig(); const decidingMatch = cfg.bestOfSets === 3 && ((m.s1 === 1 && m.s2 === 0) || (m.s2 === 1 && m.s1 === 0)); if (!decidingMatch) return false; return ( (m.p1 === 4 && m.p2 === 3) || (m.p2 === 4 && m.p1 === 3) || (m.p1 === 3 && m.p2 < 3) || (m.p2 === 3 && m.p1 < 3) ); } function avaliarSituacaoEspecial() { const is40x40 = (m.p1 === 3 && m.p2 === 3); const isAdvP1 = (m.p1 === 4 && m.p2 === 3); const isAdvP2 = (m.p2 === 4 && m.p1 === 3); clearFeedPlacar(); if (is40x40) { setFeedPlacar(0, "IGUAIS", 2, true); if (isNoAdCategory()) setFeedNoAd("NO AD", 3, true); return; } if (isNoAdCategory() && m.p1 === 3 && m.p2 === 3) { setFeedNoAd("NO AD", 3, true); } if (!isNoAdCategory()) { if (m.sacador === 1 && isAdvP1) { setFeedPlacar(1, "VANTAGEM", 2, true); return; } if (m.sacador === 2 && isAdvP2) { setFeedPlacar(2, "VANTAGEM", 2, true); return; } if (m.sacador === 1 && isAdvP2) { setFeedPlacar(2, "BREAK POINT!", 3, true); setFeedBreak("BREAK POINT", 3, true); return; } if (m.sacador === 2 && isAdvP1) { setFeedPlacar(1, "BREAK POINT!", 3, true); setFeedBreak("BREAK POINT", 3, true); return; } } if (isMatchPoint()) { if (m.sacador === 1) setFeedPlacar(2, "MATCH POINT!", 1, true); else if (m.sacador === 2) setFeedPlacar(1, "MATCH POINT!", 1, true); } } function marcarServico(jogador, tipo) { m.servicoAtual = tipo; m.statusServico = tipo === 1 ? "1º Serviço" : "2º Serviço"; setFeedSaque(jogador, tipo === 1 ? "1º Serviço" : "2º Serviço", 1, true); if (jogador === 1) setFeedJ1(tipo === 1 ? "1º Serviço" : "2º Serviço", 1, true); if (jogador === 2) setFeedJ2(tipo === 1 ? "1º Serviço" : "2º Serviço", 1, true); sync(); } function marcarServicoFalha(jogador, falhaTipo) { m.servicoAtual = 2; m.statusServico = "2º Serviço"; setFeedSaque(jogador, falhaTipo === 'out' ? "OUT!" : "LET!", 1, true); if (jogador === 1) setFeedJ1(falhaTipo === 'out' ? "OUT" : "LET", 1, true); if (jogador === 2) setFeedJ2(falhaTipo === 'out' ? "OUT" : "LET", 1, true); sync(); } function setSacadorFromStats(jogador) { document.getElementById('stats_s1').checked = (jogador === 1); document.getElementById('stats_s2').checked = (jogador === 2); m.sacador = jogador; atualizarFeedSaque(); sync(); } function registrarAproveitamentoServico(vencedorDoPonto, tipoServicoDoPonto) { if (!m.sacador) return; const st = m.sacador === 1 ? m.stats1 : m.stats2; if (tipoServicoDoPonto === 1) { st.primeiro_servico_total++; if (vencedorDoPonto === m.sacador) st.primeiro_servico_vencidos++; } else if (tipoServicoDoPonto === 2) { st.segundo_servico_total++; if (vencedorDoPonto === m.sacador) st.segundo_servico_vencidos++; } } function getTieBreakTrigger() { const cfg = getFormatoConfig(); return cfg.proSet ? cfg.tieBreakAt : 6; } function getTieBreakPoints() { return getFormatoConfig().finalTBPoints; } function getSuperTieBreakPoints() { return getFormatoConfig().superTBPoints; } function needsDecidingSuperTB() { return getFormatoConfig().decidingSuperTB; } async function sync() { const sacadorAnterior = m.sacador; m.n1 = document.getElementById('stats_p1_name_input')?.value || m.n1; m.n2 = document.getElementById('stats_p2_name_input')?.value || m.n2; m.categoriaNome = document.getElementById('categoriaNome')?.value || m.categoriaNome; m.tipoJogo = document.getElementById('tipoJogo')?.value || m.tipoJogo; m.formatoJogo = document.getElementById('formatoJogo')?.value || m.formatoJogo; m.dataPartida = document.getElementById('dataPartida')?.value || m.dataPartida; const r1 = document.getElementById('stats_s1')?.checked; const r2 = document.getElementById('stats_s2')?.checked; m.sacador = r1 ? 1 : (r2 ? 2 : 0); if (m.sacador !== sacadorAnterior) atualizarFeedSaque(); m.duration = calcularDuracao(); try { await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(m) }); } catch (e) {} updateUI(); } function setPartida(estado) { const anterior = m.status; if (estado === 'Suspensa' && anterior === 'Em andamento') { m.pauseStart = Date.now(); } if (estado === 'Em andamento' && anterior === 'Suspensa' && m.pauseStart) { m.pausedTotal += Date.now() - m.pauseStart; m.pauseStart = null; } if (estado === 'Concluída') { if (anterior === 'Em andamento') m.duration = calcularDuracao(); else if (anterior === 'Suspensa' && m.pauseStart) m.duration = calcularDuracao(); m.completedAt = Date.now(); m.pauseStart = null; } m.status = estado; if (estado === 'Em andamento' && !m.startTime) { m.startTime = Date.now(); m.pausedTotal = 0; m.pauseStart = null; } if (estado === 'Concluída' && !m.win) { m.win = m.s1 > m.s2 ? m.n1 : (m.s2 > m.s1 ? m.n2 : "Empate"); } sync(); } function addPoint(p, statType = null) { if (m.status === 'Concluída' || m.win) return; m.history.push(JSON.stringify({ ...m, history: [] })); const sacador = m.sacador; const receiver = sacador === 1 ? 2 : 1; const breakActive = isBreakPointFor(receiver); const tipoServicoDoPonto = m.servicoAtual; let quemGanhaOPonto = p; const stCometeu = p === 1 ? m.stats1 : m.stats2; if (statType) { if (statType === 'enf_fh' || statType === 'enf_bh') { stCometeu[statType]++; stCometeu.enf++; quemGanhaOPonto = receiver; setFeedPlacar(p, "Erro Não Forçado!", 1, true); if (p === 1) setFeedJ1("Erro Não Forçado", 1, true); else setFeedJ2("Erro Não Forçado", 1, true); } else if (statType === 'rede_win') { stCometeu.rede++; setFeedPlacar(p, "Ponto na Rede!", 1, true); if (p === 1) setFeedJ1("Ponto na Rede", 1, true); else setFeedJ2("Ponto na Rede", 1, true); } else if (statType === 'rede_err') { stCometeu.rede_err++; quemGanhaOPonto = receiver; setFeedSaque(p, "Saque na Rede!", 1, true); if (p === 1) setFeedJ1("Erro na Rede", 1, true); else setFeedJ2("Erro na Rede", 1, true); } else if (statType === 'ef') { stCometeu.erro_forcado++; quemGanhaOPonto = receiver; setFeedPlacar(p, "Erro Forçado!", 1, true); if (p === 1) setFeedJ1("Erro Forçado", 1, true); else setFeedJ2("Erro Forçado", 1, true); } else if (statType === 'erro_devolucao') { stCometeu.erro_devolucao++; quemGanhaOPonto = receiver; setFeedPlacar(p, "Erro de Devolução!", 1, true); if (p === 1) setFeedJ1("Erro de Devolução", 1, true); else setFeedJ2("Erro de Devolução", 1, true); } else if (statType === 'ponto_devolucao') { stCometeu.ponto_devolucao++; setFeedPlacar(p, "Ponto de Devolução!", 1, true); if (p === 1) setFeedJ1("Ponto de Devolução", 1, true); else setFeedJ2("Ponto de Devolução", 1, true); } else if (statType === 'ponto_linha_base') { stCometeu.ponto_linha_base++; setFeedPlacar(p, "Ponto da Linha de Base!", 1, true); if (p === 1) setFeedJ1("Ponto da Linha de Base", 1, true); else setFeedJ2("Ponto da Linha de Base", 1, true); } else if (statType === 'erro_linha_base') { stCometeu.erro_linha_base++; quemGanhaOPonto = receiver; setFeedPlacar(p, "Erro da Linha de Base!", 1, true); if (p === 1) setFeedJ1("Erro da Linha de Base", 1, true); else setFeedJ2("Erro da Linha de Base", 1, true); } else if (statType === 'fw' || statType === 'bw' || statType === 'ace') { stCometeu[statType]++; setFeedPlacar( p, statType === 'ace' ? "ACE!" : (statType === 'fw' ? "Forehand Winner!" : "Backhand Winner!"), 1, true ); if (p === 1) { setFeedJ1( statType === 'ace' ? "ACE" : (statType === 'fw' ? "Forehand Winner" : "Backhand Winner"), 1, true ); } else { setFeedJ2( statType === 'ace' ? "ACE" : (statType === 'fw' ? "Forehand Winner" : "Backhand Winner"), 1, true ); } } else if (statType === 'df') { stCometeu.df++; quemGanhaOPonto = receiver; m.servicoAtual = 2; m.statusServico = "2º Serviço"; setFeedPlacar(p, "Dupla Falta!", 1, true); if (p === 1) setFeedJ1("Dupla Falta", 1, true); else setFeedJ2("Dupla Falta", 1, true); } } else { if (p === 1) setFeedJ1("Ponto normal", 1, true); else setFeedJ2("Ponto normal", 1, true); } if (breakActive) { const stReceiver = receiver === 1 ? m.stats1 : m.stats2; const venceuRecebedor = (quemGanhaOPonto === receiver); stReceiver.break_total++; if (venceuRecebedor) { stReceiver.break_won++; setFeedBreak("BREAK POINT VENCIDO", 3, true); } else { setFeedBreak("BREAK POINT", 3, true); } } if (isNoAdCategory() && m.p1 === 3 && m.p2 === 3) { setFeedNoAd("NO AD", 3, true); } registrarAproveitamentoServico(quemGanhaOPonto, tipoServicoDoPonto); const stWinner = quemGanhaOPonto === 1 ? m.stats1 : m.stats2; stWinner.total++; if (m.isTB) { if (quemGanhaOPonto === 1) m.p1++; else m.p2++; const cfg = getFormatoConfig(); let target = getTieBreakPoints(); if (cfg.bestOfSets === 3 && m.s1 === 1 && m.s2 === 1 && needsDecidingSuperTB()) { target = getSuperTieBreakPoints(); } if (m.p1 >= target && m.p1 - m.p2 >= 2) { finalizeSet(1); } else if (m.p2 >= target && m.p2 - m.p1 >= 2) { finalizeSet(2); } } else { const s = quemGanhaOPonto === 1 ? 'p1' : 'p2'; const o = quemGanhaOPonto === 1 ? 'p2' : 'p1'; if (m[s] < 3) { m[s]++; } else if (m[s] === 3) { if (m[o] < 3) { winGame(quemGanhaOPonto); } else if (m[o] === 3) { if (isNoAdCategory()) { winGame(quemGanhaOPonto); } else { m[s] = 4; m[o] = 3; } } else if (m[o] === 4) { m[s] = 3; m[o] = 3; } } else if (m[s] === 4) { winGame(quemGanhaOPonto); } } avaliarSituacaoEspecial(); sync(); } function winGame(p) { m.p1 = 0; m.p2 = 0; clearFeedPlacar(); if (p === 1) { m.g1++; setFeedPlacar(1, `GAME ${m.n1}`, 5, true); setFeedGame(`GAME ${m.n1}`, 5, true); } else { m.g2++; setFeedPlacar(2, `GAME ${m.n2}`, 5, true); setFeedGame(`GAME ${m.n2}`, 5, true); } m.sacador = m.sacador === 1 ? 2 : 1; atualizarFeedSaque(); const cfg = getFormatoConfig(); if (cfg.proSet) { if (m.g1 === cfg.tieBreakAt && m.g2 === cfg.tieBreakAt) { m.isTB = true; clearFeedPlacar(); } else if ((m.g1 >= cfg.proSetGames || m.g2 >= cfg.proSetGames) && Math.abs(m.g1 - m.g2) >= 2) { finalizeSet(m.g1 > m.g2 ? 1 : 2); } return; } if (cfg.bestOfSets === 3) { if (m.g1 === 6 && m.g2 === 6) { m.isTB = true; clearFeedPlacar(); } else if ((m.g1 >= 6 || m.g2 >= 6) && Math.abs(m.g1 - m.g2) >= 2) { finalizeSet(m.g1 > m.g2 ? 1 : 2); } return; } if (m.g1 === getTieBreakTrigger() && m.g2 === getTieBreakTrigger()) { m.isTB = true; clearFeedPlacar(); } else if ((m.g1 >= getTieBreakTrigger() || m.g2 >= getTieBreakTrigger()) && Math.abs(m.g1 - m.g2) >= 2) { finalizeSet(m.g1 > m.g2 ? 1 : 2); } } function finalizeSet(p) { const placarSet = `${m.g1}-${m.g2}`; if (m.s1 + m.s2 === 0) m.parciais.set1 = placarSet; else if (m.s1 + m.s2 === 1) m.parciais.set2 = placarSet; else if (m.s1 + m.s2 === 2) m.parciais.stb = placarSet; if (p === 1) m.s1++; else m.s2++; const cfg = getFormatoConfig(); if (cfg.bestOfSets === 3) { if (m.s1 === 1 && m.s2 === 1) { novoSet(); m.isTB = true; } else if (m.s1 === 2 || m.s2 === 2) { m.win = p === 1 ? m.n1 : m.n2; m.status = "Concluída"; m.completedAt = Date.now(); m.duration = calcularDuracao(); } else { novoSet(); } return; } m.win = p === 1 ? m.n1 : m.n2; m.status = "Concluída"; m.completedAt = Date.now(); m.duration = calcularDuracao(); } function novoSet() { m.g1 = 0; m.g2 = 0; m.p1 = 0; m.p2 = 0; m.isTB = false; clearFeedPlacar(); m.servicoAtual = 1; m.statusServico = "1º Serviço"; } function scoreText() { if (m.isTB) return { p1: m.p1, p2: m.p2 }; return { p1: formatScore(m.p1, m.p2), p2: formatScore(m.p2, m.p1) }; } function updateServeVisual() { const badge1 = document.getElementById('serve-status-p1'); const badge2 = document.getElementById('serve-status-p2'); const setBadge = (badge, active) => { if (!badge) return; badge.classList.remove('serve-first', 'serve-second'); if (!active) { badge.style.display = 'none'; return; } badge.style.display = 'inline-flex'; badge.innerText = m.statusServico || "1º Serviço"; if (m.statusServico === "2º Serviço") badge.classList.add('serve-second'); else badge.classList.add('serve-first'); }; setBadge(badge1, m.sacador === 1); setBadge(badge2, m.sacador === 2); } function updateUI() { const sc = scoreText(); document.getElementById('stats_g1').innerText = m.g1; document.getElementById('stats_g2').innerText = m.g2; document.getElementById('stats_s1_val').innerText = m.s1; document.getElementById('stats_s2_val').innerText = m.s2; document.getElementById('stats_p1_name_input').value = m.n1 || "Jogador 1"; document.getElementById('stats_p2_name_input').value = m.n2 || "Jogador 2"; document.getElementById('stats_p1_score').innerText = sc.p1; document.getElementById('stats_p2_score').innerText = sc.p2; document.getElementById('categoriaNome').value = m.categoriaNome || ""; document.getElementById('tipoJogo').value = m.tipoJogo || "Simples"; document.getElementById('formatoJogo').value = m.formatoJogo || "2_sets_adv_3tb10"; document.getElementById('dataPartida').value = m.dataPartida || ""; document.getElementById('stats_s1').checked = (m.sacador === 1); document.getElementById('stats_s2').checked = (m.sacador === 2); document.getElementById('statsTitle1').innerText = `Stats ${m.n1 || "Jogador 1"}`; document.getElementById('statsTitle2').innerText = `Stats ${m.n2 || "Jogador 2"}`; document.getElementById('stats1Card').classList.toggle('active-server', m.sacador === 1); document.getElementById('stats2Card').classList.toggle('active-server', m.sacador === 2); const avatar1 = document.getElementById('stats_avatar_p1'); const avatar2 = document.getElementById('stats_avatar_p2'); if (avatar1) { avatar1.innerHTML = m.sacador === 1 ? '<span class="racket">🎾</span><span class="ball">🎾</span>' : '<span class="racket">🏸</span>'; } if (avatar2) { avatar2.innerHTML = m.sacador === 2 ? '<span class="racket">🎾</span><span class="ball">🎾</span>' : '<span class="racket">🏸</span>'; } document.getElementById('meta-status-top').innerText = m.status || "Não iniciada"; document.getElementById('meta-duration').innerText = m.duration || "00:00:00"; const controlChip = document.getElementById('control-status-chip'); if (controlChip) controlChip.innerText = m.status || "Não iniciada"; updateServeVisual(); const serveDevolucaoJ1 = [ document.getElementById('j1_erro_devolucao'), document.getElementById('j1_ponto_devolucao') ]; const serveDevolucaoJ2 = [ document.getElementById('j2_erro_devolucao'), document.getElementById('j2_ponto_devolucao') ]; serveDevolucaoJ1.forEach(btn => { if (btn) btn.disabled = (m.sacador === 1); }); serveDevolucaoJ2.forEach(btn => { if (btn) btn.disabled = (m.sacador === 2); }); const serveBtnsJ1 = [ document.querySelector('#stats1Card button[onclick="marcarServico(1, 1)"]'), document.querySelector('#stats1Card button[onclick="marcarServico(1, 2)"]'), document.querySelector('#stats1Card button[onclick="marcarServicoFalha(1, \'out\')"]'), document.querySelector('#stats1Card button[onclick="marcarServicoFalha(1, \'net\')"]'), document.getElementById('j1_df'), document.getElementById('j1_ace') ]; const serveBtnsJ2 = [ document.querySelector('#stats2Card button[onclick="marcarServico(2, 1)"]'), document.querySelector('#stats2Card button[onclick="marcarServico(2, 2)"]'), document.querySelector('#stats2Card button[onclick="marcarServicoFalha(2, \'out\')"]'), document.querySelector('#stats2Card button[onclick="marcarServicoFalha(2, \'net\')"]'), document.getElementById('j2_df'), document.getElementById('j2_ace') ]; serveBtnsJ1.forEach(btn => { if (btn) btn.disabled = (m.sacador !== 1); }); serveBtnsJ2.forEach(btn => { if (btn) btn.disabled = (m.sacador !== 2); }); } setInterval(() => { if (m.startTime && m.status !== 'Não iniciada' && m.status !== 'Concluída') { m.duration = calcularDuracao(); updateUI(); } }, 1000); function undo() { if (m.history.length > 0) { m = JSON.parse(m.history.pop()); sync(); } } function reset() { if (confirm("Deseja zerar a partida?")) { m = { matchId: Date.now(), completedAt: null, pauseStart: null, pausedTotal: 0, n1: m.n1, n2: m.n2, p1: 0, p2: 0, g1: 0, g2: 0, s1: 0, s2: 0, dataPartida: "", categoriaNome: m.categoriaNome, tipoJogo: m.tipoJogo, formatoJogo: m.formatoJogo, stats1: makeStatsDefaults(), stats2: makeStatsDefaults(), isTB: false, win: "", sacador: 1, status: "Não iniciada", startTime: null, duration: "00:00:00", history: [], parciais: { set1: "", set2: "", stb: "" }, feedPlacar: { player: 0, text: "", priority: 0 }, feedSaque: { player: 0, text: "", priority: 0 }, feedJ1: { text: "", priority: 0 }, feedJ2: { text: "", priority: 0 }, feedBreak: { text: "", priority: 0 }, feedNoAd: { text: "", priority: 0 }, feedGame: { text: "", priority: 0 }, servicoAtual: 1, statusServico: "1º Serviço" }; sync(); } } function abrirVisualizador() { window.open('visualizador.html', '_blank'); } function abrirRelatorio() { window.open('relatorio.html', '_blank'); } function pushDefaults(data) { if (!data.pauseStart) data.pauseStart = null; if (!data.pausedTotal) data.pausedTotal = 0; if (!data.servicoAtual) data.servicoAtual = 1; if (!data.statusServico) data.statusServico = "1º Serviço"; if (!data.feedPlacar && data.feed) data.feedPlacar = data.feed; if (!data.feedSaque) data.feedSaque = { player: 0, text: "", priority: 0 }; if (!data.feedPlacar) data.feedPlacar = { player: 0, text: "", priority: 0 }; if (!data.feedJ1) data.feedJ1 = { text: "", priority: 0 }; if (!data.feedJ2) data.feedJ2 = { text: "", priority: 0 }; if (!data.feedBreak) data.feedBreak = { text: "", priority: 0 }; if (!data.feedNoAd) data.feedNoAd = { text: "", priority: 0 }; if (!data.feedGame) data.feedGame = { text: "", priority: 0 }; if (!data.stats1) data.stats1 = {}; if (!data.stats2) data.stats2 = {}; const defaults = makeStatsDefaults(); data.stats1 = { ...defaults, ...data.stats1 }; data.stats2 = { ...defaults, ...data.stats2 }; if (!data.n1) data.n1 = "Jogador 1"; if (!data.n2) data.n2 = "Jogador 2"; if (!data.duration) data.duration = "00:00:00"; if (!data.dataPartida) data.dataPartida = ""; if (!data.categoriaNome) data.categoriaNome = "ATP 250"; if (!data.tipoJogo) data.tipoJogo = "Simples"; if (!data.formatoJogo) data.formatoJogo = "2_sets_adv_3tb10"; return data; } fetch(DB_URL) .then(r => r.json()) .then(data => { if (data) { m = pushDefaults(data); updateUI(); } }) .catch(() => {}); sync(); </script>
+ <script> const DB_URL = "https://rodrigoteste-1df63-default-rtdb.firebaseio.com/match.json"; const labels = [0, 15, 30, 40]; function makeStatsDefaults() { return { fw: 0, bw: 0, rede: 0, rede_err: 0, enf: 0, enf_fh: 0, enf_bh: 0, df: 0, ace: 0, total: 0, primeiro_servico_total: 0, segundo_servico_total: 0, primeiro_servico_vencidos: 0, segundo_servico_vencidos: 0, erro_forcado: 0, erro_devolucao: 0, ponto_devolucao: 0, ponto_linha_base: 0, erro_linha_base: 0, break_won: 0, break_total: 0 }; } let m = { matchId: Date.now(), completedAt: null, pauseStart: null, pausedTotal: 0, n1: "Jogador 1", n2: "Jogador 2", p1: 0, p2: 0, g1: 0, g2: 0, s1: 0, s2: 0, dataPartida: "", categoriaNome: "ATP 250", tipoJogo: "Simples", formatoJogo: "2_sets_adv_3tb10", stats1: makeStatsDefaults(), stats2: makeStatsDefaults(), isTB: false, win: "", sacador: 1, status: "Não iniciada", startTime: null, duration: "00:00:00", history: [], parciais: { set1: "", set2: "", stb: "" }, feedPlacar: { player: 0, text: "", priority: 0 }, feedSaque: { player: 0, text: "", priority: 0 }, feedJ1: { text: "", priority: 0 }, feedJ2: { text: "", priority: 0 }, feedBreak: { text: "", priority: 0 }, feedNoAd: { text: "", priority: 0 }, feedGame: { text: "", priority: 0 }, servicoAtual: 1, statusServico: "1º Serviço" }; const views = ["stats", "partida"]; function showView(view) { views.forEach(v => { const viewEl = document.getElementById(`view-${v}`); const tabEl = document.getElementById(`tab-${v}`); if (viewEl) viewEl.classList.toggle("active", v === view); if (tabEl) tabEl.classList.toggle("active", v === view); }); updateUI(); } function getFormatoConfig() { const f = m.formatoJogo; const config = { bestOfSets: 1, noAd: false, proSet: false, proSetGames: 6, tieBreakAt: 6, finalTBPoints: 7, superTBPoints: 10, decidingSuperTB: false }; switch (f) { case "2_sets_adv_3tb10": config.bestOfSets = 3; config.noAd = false; config.decidingSuperTB = true; config.superTBPoints = 10; break; case "2_sets_noad_3tb10": config.bestOfSets = 3; config.noAd = true; config.decidingSuperTB = true; config.superTBPoints = 10; break; case "1_set_adv_tb10": config.bestOfSets = 1; config.noAd = false; config.tieBreakAt = 6; config.finalTBPoints = 10; break; case "1_set_adv_tb7": config.bestOfSets = 1; config.noAd = false; config.tieBreakAt = 6; config.finalTBPoints = 7; break; case "1_set_noad_tb7": config.bestOfSets = 1; config.noAd = true; config.tieBreakAt = 6; config.finalTBPoints = 7; break; case "1_set_pro_8_adv_tb7": config.bestOfSets = 1; config.noAd = false; config.proSet = true; config.proSetGames = 8; config.tieBreakAt = 7; config.finalTBPoints = 7; break; case "1_set_pro_8_noad_tb7": config.bestOfSets = 1; config.noAd = true; config.proSet = true; config.proSetGames = 8; config.tieBreakAt = 7; config.finalTBPoints = 7; break; } return config; } function isNoAdCategory() { return getFormatoConfig().noAd; } function formatScore(me, other) { if (m.isTB) return me; if (me >= 3 && other >= 3) { if (me === other) return "IGUAIS"; if (isNoAdCategory()) return 40; if (me === other + 1) return "AD"; if (other === me + 1) return "40"; } return labels[me] ?? 0; } function setFeedPlacar(player, text, priority = 1, force = false) { if (force) { m.feedPlacar = { player, text, priority }; return; } if (!m.feedPlacar || !m.feedPlacar.text || (m.feedPlacar.priority || 0) <= priority) { m.feedPlacar = { player, text, priority }; } } function setFeedSaque(player, text, priority = 1, force = false) { if (force) { m.feedSaque = { player, text, priority }; return; } if (!m.feedSaque || !m.feedSaque.text || (m.feedSaque.priority || 0) <= priority) { m.feedSaque = { player, text, priority }; } } function setFeedJ1(text, priority = 1, force = false) { if (force) { m.feedJ1 = { text, priority }; return; } if (!m.feedJ1 || !m.feedJ1.text || (m.feedJ1.priority || 0) <= priority) { m.feedJ1 = { text, priority }; } } function setFeedJ2(text, priority = 1, force = false) { if (force) { m.feedJ2 = { text, priority }; return; } if (!m.feedJ2 || !m.feedJ2.text || (m.feedJ2.priority || 0) <= priority) { m.feedJ2 = { text, priority }; } } function setFeedBreak(text, priority = 1, force = false) { if (force) { m.feedBreak = { text, priority }; return; } if (!m.feedBreak || !m.feedBreak.text || (m.feedBreak.priority || 0) <= priority) { m.feedBreak = { text, priority }; } } function setFeedNoAd(text, priority = 1, force = false) { if (force) { m.feedNoAd = { text, priority }; return; } if (!m.feedNoAd || !m.feedNoAd.text || (m.feedNoAd.priority || 0) <= priority) { m.feedNoAd = { text, priority }; } } function setFeedGame(text, priority = 1, force = false) { if (force) { m.feedGame = { text, priority }; return; } if (!m.feedGame || !m.feedGame.text || (m.feedGame.priority || 0) <= priority) { m.feedGame = { text, priority }; } } function clearFeedPlacar() { m.feedPlacar = { player: 0, text: "", priority: 0 }; } function clearFeedSaque() { m.feedSaque = { player: 0, text: "", priority: 0 }; } function atualizarFeedSaque() { setFeedSaque(m.sacador, `SAQUE 🎾`, 0, true); } function calcularDuracao() { if (!m.startTime) return "00:00:00"; let elapsed = Date.now() - m.startTime - (m.pausedTotal || 0); if (m.status === "Suspensa" && m.pauseStart) { elapsed = m.pauseStart - m.startTime - (m.pausedTotal || 0); } const diff = Math.max(0, Math.floor(elapsed / 1000)); const h = Math.floor(diff / 3600).toString().padStart(2, '0'); const min = Math.floor((diff % 3600) / 60).toString().padStart(2, '0'); const s = Math.floor(diff % 60).toString().padStart(2, '0'); return `${h}:${min}:${s}`; } function isBreakPointFor(player) { if (m.sacador === 0) return false; if (m.sacador === 1 && player === 2) { return (m.p2 === 3 && m.p1 < 3) || (m.p2 === 4 && m.p1 === 3); } if (m.sacador === 2 && player === 1) { return (m.p1 === 3 && m.p2 < 3) || (m.p1 === 4 && m.p2 === 3); } return false; } function isMatchPoint() { if (m.status === 'Concluída' || m.win) return false; const cfg = getFormatoConfig(); const decidingMatch = cfg.bestOfSets === 3 && ((m.s1 === 1 && m.s2 === 0) || (m.s2 === 1 && m.s1 === 0)); if (!decidingMatch) return false; return ( (m.p1 === 4 && m.p2 === 3) || (m.p2 === 4 && m.p1 === 3) || (m.p1 === 3 && m.p2 < 3) || (m.p2 === 3 && m.p1 < 3) ); } function avaliarSituacaoEspecial() { const is40x40 = (m.p1 === 3 && m.p2 === 3); const isAdvP1 = (m.p1 === 4 && m.p2 === 3); const isAdvP2 = (m.p2 === 4 && m.p1 === 3); clearFeedPlacar(); if (is40x40) { setFeedPlacar(0, "IGUAIS", 2, true); if (isNoAdCategory()) setFeedNoAd("NO AD", 3, true); return; } if (isNoAdCategory() && m.p1 === 3 && m.p2 === 3) { setFeedNoAd("NO AD", 3, true); } if (!isNoAdCategory()) { if (m.sacador === 1 && isAdvP1) { setFeedPlacar(1, "VANTAGEM", 2, true); return; } if (m.sacador === 2 && isAdvP2) { setFeedPlacar(2, "VANTAGEM", 2, true); return; } if (m.sacador === 1 && isAdvP2) { setFeedPlacar(2, "BREAK POINT!", 3, true); setFeedBreak("BREAK POINT", 3, true); return; } if (m.sacador === 2 && isAdvP1) { setFeedPlacar(1, "BREAK POINT!", 3, true); setFeedBreak("BREAK POINT", 3, true); return; } } if (isMatchPoint()) { if (m.sacador === 1) setFeedPlacar(2, "BREAK POINT!", 1, true); else if (m.sacador === 2) setFeedPlacar(1, "BREAK POINT!", 1, true); } } function marcarServico(jogador, tipo) { m.servicoAtual = tipo; m.statusServico = tipo === 1 ? "1º Serviço" : "2º Serviço"; setFeedSaque(jogador, tipo === 1 ? "1º Serviço" : "2º Serviço", 1, true); if (jogador === 1) setFeedJ1(tipo === 1 ? "1º Serviço" : "2º Serviço", 1, true); if (jogador === 2) setFeedJ2(tipo === 1 ? "1º Serviço" : "2º Serviço", 1, true); sync(); } function marcarServicoFalha(jogador, falhaTipo) { m.servicoAtual = 2; m.statusServico = "2º Serviço"; setFeedSaque(jogador, falhaTipo === 'out' ? "OUT!" : "LET!", 1, true); if (jogador === 1) setFeedJ1(falhaTipo === 'out' ? "OUT" : "LET", 1, true); if (jogador === 2) setFeedJ2(falhaTipo === 'out' ? "OUT" : "LET", 1, true); sync(); } function setSacadorFromStats(jogador) { document.getElementById('stats_s1').checked = (jogador === 1); document.getElementById('stats_s2').checked = (jogador === 2); m.sacador = jogador; atualizarFeedSaque(); sync(); } function registrarAproveitamentoServico(vencedorDoPonto, tipoServicoDoPonto) { if (!m.sacador) return; const st = m.sacador === 1 ? m.stats1 : m.stats2; if (tipoServicoDoPonto === 1) { st.primeiro_servico_total++; if (vencedorDoPonto === m.sacador) st.primeiro_servico_vencidos++; } else if (tipoServicoDoPonto === 2) { st.segundo_servico_total++; if (vencedorDoPonto === m.sacador) st.segundo_servico_vencidos++; } } function getTieBreakTrigger() { const cfg = getFormatoConfig(); return cfg.proSet ? cfg.tieBreakAt : 6; } function getTieBreakPoints() { return getFormatoConfig().finalTBPoints; } function getSuperTieBreakPoints() { return getFormatoConfig().superTBPoints; } function needsDecidingSuperTB() { return getFormatoConfig().decidingSuperTB; } async function sync() { const sacadorAnterior = m.sacador; m.n1 = document.getElementById('stats_p1_name_input')?.value || m.n1; m.n2 = document.getElementById('stats_p2_name_input')?.value || m.n2; m.categoriaNome = document.getElementById('categoriaNome')?.value || m.categoriaNome; m.tipoJogo = document.getElementById('tipoJogo')?.value || m.tipoJogo; m.formatoJogo = document.getElementById('formatoJogo')?.value || m.formatoJogo; m.dataPartida = document.getElementById('dataPartida')?.value || m.dataPartida; const r1 = document.getElementById('stats_s1')?.checked; const r2 = document.getElementById('stats_s2')?.checked; m.sacador = r1 ? 1 : (r2 ? 2 : 0); if (m.sacador !== sacadorAnterior) atualizarFeedSaque(); m.duration = calcularDuracao(); try { await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(m) }); } catch (e) {} updateUI(); } function setPartida(estado) { const anterior = m.status; if (estado === 'Suspensa' && anterior === 'Em andamento') { m.pauseStart = Date.now(); } if (estado === 'Em andamento' && anterior === 'Suspensa' && m.pauseStart) { m.pausedTotal += Date.now() - m.pauseStart; m.pauseStart = null; } if (estado === 'Concluída') { if (anterior === 'Em andamento') m.duration = calcularDuracao(); else if (anterior === 'Suspensa' && m.pauseStart) m.duration = calcularDuracao(); m.completedAt = Date.now(); m.pauseStart = null; } m.status = estado; if (estado === 'Em andamento' && !m.startTime) { m.startTime = Date.now(); m.pausedTotal = 0; m.pauseStart = null; } if (estado === 'Concluída' && !m.win) { m.win = m.s1 > m.s2 ? m.n1 : (m.s2 > m.s1 ? m.n2 : "Empate"); } sync(); } 
+  
+  function addPoint(p, statType = null) {
+  if (m.status === 'Concluída' || m.win) return;
+
+  m.history.push(JSON.stringify({ ...m, history: [] }));
+
+  const sacador = m.sacador;
+  const receiver = sacador === 1 ? 2 : 1;
+  const adversario = p === 1 ? 2 : 1;
+  const breakActive = isBreakPointFor(receiver);
+  const tipoServicoDoPonto = m.servicoAtual;
+
+  let quemGanhaOPonto = p;
+  const stCometeu = p === 1 ? m.stats1 : m.stats2;
+
+  const feedJogador = (jogador, texto, priority = 1, force = true) => {
+    if (jogador === 1) setFeedJ1(texto, priority, force);
+    else setFeedJ2(texto, priority, force);
+  };
+
+  if (statType) {
+    if (statType === 'enf_fh' || statType === 'enf_bh') {
+      stCometeu[statType]++;
+      stCometeu.enf++;
+      quemGanhaOPonto = adversario;
+
+      setFeedPlacar(adversario, "Erro Não Forçado!", 1, true);
+      feedJogador(p, statType === 'enf_fh' ? "Forehand ERRO NÃO FORÇADO" : "Backhand ERRO NÃO FORÇADO");
+
+    } else if (statType === 'rede_win') {
+      stCometeu.rede++;
+      quemGanhaOPonto = p;
+
+      setFeedPlacar(p, "Ponto na Rede!", 1, true);
+      feedJogador(p, "Ponto na Rede");
+
+    } else if (statType === 'rede_err') {
+      stCometeu.rede_err++;
+      quemGanhaOPonto = adversario;
+
+      setFeedPlacar(adversario, "Erro na Rede!", 1, true);
+      feedJogador(p, "Erro na Rede");
+
+    } else if (statType === 'ef') {
+      stCometeu.erro_forcado++;
+      quemGanhaOPonto = adversario;
+
+      setFeedPlacar(adversario, "Erro Forçado!", 1, true);
+      feedJogador(p, "Erro Forçado");
+
+    } else if (statType === 'erro_devolucao') {
+      stCometeu.erro_devolucao++;
+      quemGanhaOPonto = adversario;
+
+      setFeedPlacar(adversario, "Erro de Devolução!", 1, true);
+      feedJogador(p, "Erro de Devolução");
+
+    } else if (statType === 'ponto_devolucao') {
+      stCometeu.ponto_devolucao++;
+      quemGanhaOPonto = p;
+
+      setFeedPlacar(p, "Ponto de Devolução!", 1, true);
+      feedJogador(p, "Ponto de Devolução");
+
+    } else if (statType === 'ponto_linha_base') {
+      stCometeu.ponto_linha_base++;
+      quemGanhaOPonto = p;
+
+      setFeedPlacar(p, "Ponto da Linha de Base!", 1, true);
+      feedJogador(p, "Ponto da Linha de Base");
+
+    } else if (statType === 'erro_linha_base') {
+      stCometeu.erro_linha_base++;
+      quemGanhaOPonto = adversario;
+
+      setFeedPlacar(adversario, "Erro da Linha de Base!", 1, true);
+      feedJogador(p, "Erro da Linha de Base");
+
+    } else if (statType === 'fw' || statType === 'bw' || statType === 'ace') {
+      stCometeu[statType]++;
+      quemGanhaOPonto = p;
+
+      setFeedPlacar(
+        p,
+        statType === 'ace' ? "ACE!" : (statType === 'fw' ? "Forehand Winner!" : "Backhand Winner!"),
+        1,
+        true
+      );
+
+      feedJogador(
+        p,
+        statType === 'ace' ? "ACE" : (statType === 'fw' ? "Forehand Winner" : "Backhand Winner")
+      );
+
+    } else if (statType === 'df') {
+      stCometeu.df++;
+      quemGanhaOPonto = adversario;
+      m.servicoAtual = 2;
+      m.statusServico = "2º Serviço";
+
+      setFeedPlacar(adversario, "Dupla Falta!", 1, true);
+      feedJogador(p, "Dupla Falta");
+    }
+  } else {
+    feedJogador(p, "Ponto normal");
+  }
+
+  if (breakActive) {
+    const stReceiver = receiver === 1 ? m.stats1 : m.stats2;
+    const venceuRecebedor = (quemGanhaOPonto === receiver);
+
+    stReceiver.break_total++;
+
+    if (venceuRecebedor) {
+      stReceiver.break_won++;
+      setFeedBreak("BREAK POINT VENCIDO", 3, true);
+    } else {
+      setFeedBreak("BREAK POINT", 3, true);
+    }
+  }
+
+  if (isNoAdCategory() && m.p1 === 3 && m.p2 === 3) {
+    setFeedNoAd("NO AD", 3, true);
+  }
+
+  registrarAproveitamentoServico(quemGanhaOPonto, tipoServicoDoPonto);
+
+  const stWinner = quemGanhaOPonto === 1 ? m.stats1 : m.stats2;
+  stWinner.total++;
+
+  if (m.isTB) {
+    if (quemGanhaOPonto === 1) m.p1++;
+    else m.p2++;
+
+    const cfg = getFormatoConfig();
+    let target = getTieBreakPoints();
+
+    if (cfg.bestOfSets === 3 && m.s1 === 1 && m.s2 === 1 && needsDecidingSuperTB()) {
+      target = getSuperTieBreakPoints();
+    }
+
+    if (m.p1 >= target && m.p1 - m.p2 >= 2) {
+      finalizeSet(1);
+    } else if (m.p2 >= target && m.p2 - m.p1 >= 2) {
+      finalizeSet(2);
+    }
+  } else {
+    const s = quemGanhaOPonto === 1 ? 'p1' : 'p2';
+    const o = quemGanhaOPonto === 1 ? 'p2' : 'p1';
+
+    if (m[s] < 3) {
+      m[s]++;
+    } else if (m[s] === 3) {
+      if (m[o] < 3) {
+        winGame(quemGanhaOPonto);
+      } else if (m[o] === 3) {
+        if (isNoAdCategory()) {
+          winGame(quemGanhaOPonto);
+        } else {
+          m[s] = 4;
+          m[o] = 3;
+        }
+      } else if (m[o] === 4) {
+        m[s] = 3;
+        m[o] = 3;
+      }
+    } else if (m[s] === 4) {
+      winGame(quemGanhaOPonto);
+    }
+  }
+
+  avaliarSituacaoEspecial();
+  sync();
+}
+
+function winGame(p) { m.p1 = 0; m.p2 = 0; clearFeedPlacar(); if (p === 1) { m.g1++; setFeedPlacar(1, `GAME ${m.n1}`, 5, true); setFeedGame(`GAME ${m.n1}`, 5, true); } else { m.g2++; setFeedPlacar(2, `GAME ${m.n2}`, 5, true); setFeedGame(`GAME ${m.n2}`, 5, true); } m.sacador = m.sacador === 1 ? 2 : 1; atualizarFeedSaque(); const cfg = getFormatoConfig(); if (cfg.proSet) { if (m.g1 === cfg.tieBreakAt && m.g2 === cfg.tieBreakAt) { m.isTB = true; clearFeedPlacar(); } else if ((m.g1 >= cfg.proSetGames || m.g2 >= cfg.proSetGames) && Math.abs(m.g1 - m.g2) >= 2) { finalizeSet(m.g1 > m.g2 ? 1 : 2); } return; } if (cfg.bestOfSets === 3) { if (m.g1 === 6 && m.g2 === 6) { m.isTB = true; clearFeedPlacar(); } else if ((m.g1 >= 6 || m.g2 >= 6) && Math.abs(m.g1 - m.g2) >= 2) { finalizeSet(m.g1 > m.g2 ? 1 : 2); } return; } if (m.g1 === getTieBreakTrigger() && m.g2 === getTieBreakTrigger()) { m.isTB = true; clearFeedPlacar(); } else if ((m.g1 >= getTieBreakTrigger() || m.g2 >= getTieBreakTrigger()) && Math.abs(m.g1 - m.g2) >= 2) { finalizeSet(m.g1 > m.g2 ? 1 : 2); } } function finalizeSet(p) { const placarSet = `${m.g1}-${m.g2}`; if (m.s1 + m.s2 === 0) m.parciais.set1 = placarSet; else if (m.s1 + m.s2 === 1) m.parciais.set2 = placarSet; else if (m.s1 + m.s2 === 2) m.parciais.stb = placarSet; if (p === 1) m.s1++; else m.s2++; const cfg = getFormatoConfig(); if (cfg.bestOfSets === 3) { if (m.s1 === 1 && m.s2 === 1) { novoSet(); m.isTB = true; } else if (m.s1 === 2 || m.s2 === 2) { m.win = p === 1 ? m.n1 : m.n2; m.status = "Concluída"; m.completedAt = Date.now(); m.duration = calcularDuracao(); } else { novoSet(); } return; } m.win = p === 1 ? m.n1 : m.n2; m.status = "Concluída"; m.completedAt = Date.now(); m.duration = calcularDuracao(); } function novoSet() { m.g1 = 0; m.g2 = 0; m.p1 = 0; m.p2 = 0; m.isTB = false; clearFeedPlacar(); m.servicoAtual = 1; m.statusServico = "1º Serviço"; } function scoreText() { if (m.isTB) return { p1: m.p1, p2: m.p2 }; return { p1: formatScore(m.p1, m.p2), p2: formatScore(m.p2, m.p1) }; } function updateServeVisual() { const badge1 = document.getElementById('serve-status-p1'); const badge2 = document.getElementById('serve-status-p2'); const setBadge = (badge, active) => { if (!badge) return; badge.classList.remove('serve-first', 'serve-second'); if (!active) { badge.style.display = 'none'; return; } badge.style.display = 'inline-flex'; badge.innerText = m.statusServico || "1º Serviço"; if (m.statusServico === "2º Serviço") badge.classList.add('serve-second'); else badge.classList.add('serve-first'); }; setBadge(badge1, m.sacador === 1); setBadge(badge2, m.sacador === 2); } function updateUI() { const sc = scoreText(); document.getElementById('stats_g1').innerText = m.g1; document.getElementById('stats_g2').innerText = m.g2; document.getElementById('stats_s1_val').innerText = m.s1; document.getElementById('stats_s2_val').innerText = m.s2; document.getElementById('stats_p1_name_input').value = m.n1 || "Jogador 1"; document.getElementById('stats_p2_name_input').value = m.n2 || "Jogador 2"; document.getElementById('stats_p1_score').innerText = sc.p1; document.getElementById('stats_p2_score').innerText = sc.p2; document.getElementById('categoriaNome').value = m.categoriaNome || ""; document.getElementById('tipoJogo').value = m.tipoJogo || "Simples"; document.getElementById('formatoJogo').value = m.formatoJogo || "2_sets_adv_3tb10"; document.getElementById('dataPartida').value = m.dataPartida || ""; document.getElementById('stats_s1').checked = (m.sacador === 1); document.getElementById('stats_s2').checked = (m.sacador === 2); document.getElementById('statsTitle1').innerText = `Stats ${m.n1 || "Jogador 1"}`; document.getElementById('statsTitle2').innerText = `Stats ${m.n2 || "Jogador 2"}`; document.getElementById('stats1Card').classList.toggle('active-server', m.sacador === 1); document.getElementById('stats2Card').classList.toggle('active-server', m.sacador === 2); const avatar1 = document.getElementById('stats_avatar_p1'); const avatar2 = document.getElementById('stats_avatar_p2'); if (avatar1) { avatar1.innerHTML = m.sacador === 1 ? '<span class="racket">🎾</span><span class="ball">🎾</span>' : '<span class="racket">🏸</span>'; } if (avatar2) { avatar2.innerHTML = m.sacador === 2 ? '<span class="racket">🎾</span><span class="ball">🎾</span>' : '<span class="racket">🏸</span>'; } document.getElementById('meta-status-top').innerText = m.status || "Não iniciada"; document.getElementById('meta-duration').innerText = m.duration || "00:00:00"; const controlChip = document.getElementById('control-status-chip'); if (controlChip) controlChip.innerText = m.status || "Não iniciada"; updateServeVisual(); const serveDevolucaoJ1 = [ document.getElementById('j1_erro_devolucao'), document.getElementById('j1_ponto_devolucao') ]; const serveDevolucaoJ2 = [ document.getElementById('j2_erro_devolucao'), document.getElementById('j2_ponto_devolucao') ]; serveDevolucaoJ1.forEach(btn => { if (btn) btn.disabled = (m.sacador === 1); }); serveDevolucaoJ2.forEach(btn => { if (btn) btn.disabled = (m.sacador === 2); }); const serveBtnsJ1 = [ document.querySelector('#stats1Card button[onclick="marcarServico(1, 1)"]'), document.querySelector('#stats1Card button[onclick="marcarServico(1, 2)"]'), document.querySelector('#stats1Card button[onclick="marcarServicoFalha(1, \'out\')"]'), document.querySelector('#stats1Card button[onclick="marcarServicoFalha(1, \'net\')"]'), document.getElementById('j1_df'), document.getElementById('j1_ace') ]; const serveBtnsJ2 = [ document.querySelector('#stats2Card button[onclick="marcarServico(2, 1)"]'), document.querySelector('#stats2Card button[onclick="marcarServico(2, 2)"]'), document.querySelector('#stats2Card button[onclick="marcarServicoFalha(2, \'out\')"]'), document.querySelector('#stats2Card button[onclick="marcarServicoFalha(2, \'net\')"]'), document.getElementById('j2_df'), document.getElementById('j2_ace') ]; serveBtnsJ1.forEach(btn => { if (btn) btn.disabled = (m.sacador !== 1); }); serveBtnsJ2.forEach(btn => { if (btn) btn.disabled = (m.sacador !== 2); }); } setInterval(() => { if (m.startTime && m.status !== 'Não iniciada' && m.status !== 'Concluída') { m.duration = calcularDuracao(); updateUI(); } }, 1000); function undo() { if (m.history.length > 0) { m = JSON.parse(m.history.pop()); sync(); } } function reset() { if (confirm("Deseja zerar a partida?")) { m = { matchId: Date.now(), completedAt: null, pauseStart: null, pausedTotal: 0, n1: m.n1, n2: m.n2, p1: 0, p2: 0, g1: 0, g2: 0, s1: 0, s2: 0, dataPartida: "", categoriaNome: m.categoriaNome, tipoJogo: m.tipoJogo, formatoJogo: m.formatoJogo, stats1: makeStatsDefaults(), stats2: makeStatsDefaults(), isTB: false, win: "", sacador: 1, status: "Não iniciada", startTime: null, duration: "00:00:00", history: [], parciais: { set1: "", set2: "", stb: "" }, feedPlacar: { player: 0, text: "", priority: 0 }, feedSaque: { player: 0, text: "", priority: 0 }, feedJ1: { text: "", priority: 0 }, feedJ2: { text: "", priority: 0 }, feedBreak: { text: "", priority: 0 }, feedNoAd: { text: "", priority: 0 }, feedGame: { text: "", priority: 0 }, servicoAtual: 1, statusServico: "1º Serviço" }; sync(); } } function abrirVisualizador() { window.open('visualizador.html', '_blank'); } function abrirRelatorio() { window.open('relatorio.html', '_blank'); } function pushDefaults(data) { if (!data.pauseStart) data.pauseStart = null; if (!data.pausedTotal) data.pausedTotal = 0; if (!data.servicoAtual) data.servicoAtual = 1; if (!data.statusServico) data.statusServico = "1º Serviço"; if (!data.feedPlacar && data.feed) data.feedPlacar = data.feed; if (!data.feedSaque) data.feedSaque = { player: 0, text: "", priority: 0 }; if (!data.feedPlacar) data.feedPlacar = { player: 0, text: "", priority: 0 }; if (!data.feedJ1) data.feedJ1 = { text: "", priority: 0 }; if (!data.feedJ2) data.feedJ2 = { text: "", priority: 0 }; if (!data.feedBreak) data.feedBreak = { text: "", priority: 0 }; if (!data.feedNoAd) data.feedNoAd = { text: "", priority: 0 }; if (!data.feedGame) data.feedGame = { text: "", priority: 0 }; if (!data.stats1) data.stats1 = {}; if (!data.stats2) data.stats2 = {}; const defaults = makeStatsDefaults(); data.stats1 = { ...defaults, ...data.stats1 }; data.stats2 = { ...defaults, ...data.stats2 }; if (!data.n1) data.n1 = "Jogador 1"; if (!data.n2) data.n2 = "Jogador 2"; if (!data.duration) data.duration = "00:00:00"; if (!data.dataPartida) data.dataPartida = ""; if (!data.categoriaNome) data.categoriaNome = "ATP 250"; if (!data.tipoJogo) data.tipoJogo = "Simples"; if (!data.formatoJogo) data.formatoJogo = "2_sets_adv_3tb10"; return data; } fetch(DB_URL) .then(r => r.json()) .then(data => { if (data) { m = pushDefaults(data); updateUI(); } }) .catch(() => {}); sync(); </script>
 </body>
 </html>
