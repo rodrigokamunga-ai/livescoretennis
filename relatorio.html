@@ -198,6 +198,235 @@
     </div>
   </div>
 
-  <script> const DB_URL = "https://rodrigoteste-1df63-default-rtdb.firebaseio.com/match.json"; const STORAGE_KEYS = { p1: "matchReport_p1Collapsed", p2: "matchReport_p2Collapsed", comp: "matchReport_compCollapsed", chart: "matchReport_chartCollapsed" }; let currentMatch = null; let pieChart = null; let lastChartSignature = ""; function num(v) { return Number(v || 0); } function setText(id, text) { const el = document.getElementById(id); if (el) el.innerText = text; } function formatTime(totalSeconds) { const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0"); const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0"); const s = String(totalSeconds % 60).padStart(2, "0"); return `${h}:${m}:${s}`; } function formatDateBR(value) { if (!value) return "-"; const d = new Date(value + "T00:00:00"); if (isNaN(d.getTime())) return value; return d.toLocaleDateString("pt-BR"); } function formatBreakPoints(st) { const won = num(st?.break_won); const total = num(st?.break_total); return `${won}/${total}`; } function perfScore(st) { const total = num(st?.total); if (total === 0) return 0.0; const wins = num(st?.fw) + num(st?.bw) + num(st?.rede) + num(st?.ace) + num(st?.erro_forcado) + num(st?.ponto_devolucao) + num(st?.ponto_linha_base) + num(st?.break_won); const losses = num(st?.enf) + num(st?.rede_err) + num(st?.df) + num(st?.erro_devolucao) + num(st?.erro_linha_base) + num(st?.break_lost); let score = 5 + ((wins - losses) / Math.max(1, total)) * 3.2 + num(st?.ace) * 0.12 + num(st?.break_won) * 0.25 - num(st?.break_lost) * 0.2; score = Math.max(0, Math.min(10, score)); return Math.round(score * 10) / 10; } function calcWinners(st) { return ( num(st?.ace) + num(st?.rede) + num(st?.fw) + num(st?.bw) + num(st?.ponto_devolucao) + num(st?.ponto_linha_base) ); } function calcErrorsNF(st) { return ( num(st?.df) + num(st?.rede_err) + num(st?.enf_fh) + num(st?.enf_bh) + num(st?.erro_forcado) + num(st?.erro_devolucao) + num(st?.erro_linha_base) ); } function loadUIState() { const p1Collapsed = localStorage.getItem(STORAGE_KEYS.p1) === "1"; const p2Collapsed = localStorage.getItem(STORAGE_KEYS.p2) === "1"; const compCollapsed = localStorage.getItem(STORAGE_KEYS.comp) === "1"; const chartCollapsed = localStorage.getItem(STORAGE_KEYS.chart) === "1"; applyCollapseState(1, p1Collapsed); applyCollapseState(2, p2Collapsed); applyComparisonState(compCollapsed); applyChartState(chartCollapsed); } function saveUIState() { const p1 = document.getElementById("box-p1")?.classList.contains("collapsed"); const p2 = document.getElementById("box-p2")?.classList.contains("collapsed"); const comp = document.getElementById("comparisonBody")?.classList.contains("hide"); const chart = document.getElementById("chartBody")?.classList.contains("hide"); localStorage.setItem(STORAGE_KEYS.p1, p1 ? "1" : "0"); localStorage.setItem(STORAGE_KEYS.p2, p2 ? "1" : "0"); localStorage.setItem(STORAGE_KEYS.comp, comp ? "1" : "0"); localStorage.setItem(STORAGE_KEYS.chart, chart ? "1" : "0"); } function applyCollapseState(player, collapsed) { const box = document.getElementById(`box-p${player}`); const btn = document.getElementById(`toggle-p${player}`); if (!box || !btn) return; box.classList.toggle("collapsed", collapsed); btn.textContent = collapsed ? "Expandir" : "Recolher"; } function applyComparisonState(collapsed) { const body = document.getElementById("comparisonBody"); const btn = document.getElementById("toggle-comparison"); if (!body || !btn) return; body.classList.toggle("hide", collapsed); btn.textContent = collapsed ? "Expandir" : "Recolher"; } function applyChartState(collapsed) { const body = document.getElementById("chartBody"); const btn = document.getElementById("toggle-chart"); if (!body || !btn) return; body.classList.toggle("hide", collapsed); btn.textContent = collapsed ? "Expandir" : "Recolher"; } function togglePlayer(player) { const box = document.getElementById(`box-p${player}`); const btn = document.getElementById(`toggle-p${player}`); if (!box || !btn) return; box.classList.toggle("collapsed"); btn.textContent = box.classList.contains("collapsed") ? "Expandir" : "Recolher"; saveUIState(); } function toggleComparison() { const body = document.getElementById("comparisonBody"); const btn = document.getElementById("toggle-comparison"); if (!body || !btn) return; body.classList.toggle("hide"); btn.textContent = body.classList.contains("hide") ? "Expandir" : "Recolher"; saveUIState(); } function toggleChart() { const body = document.getElementById("chartBody"); const btn = document.getElementById("toggle-chart"); if (!body || !btn) return; body.classList.toggle("hide"); btn.textContent = body.classList.contains("hide") ? "Expandir" : "Recolher"; saveUIState(); } function buildChartLegend(items, totalAll) { const legend = document.getElementById("chartLegend"); if (!legend) return; legend.innerHTML = items.map(item => { const pct = totalAll > 0 ? ((item.value / totalAll) * 100).toFixed(1) : "0.0"; return ` <div class="legend-item"> <span class="legend-color" style="background:${item.color};"></span> <div class="txt"> <div class="k">${item.label}</div> <div class="v">${item.value} • ${pct}%</div> </div> </div> `; }).join(""); } function renderMatchChart(m) { const s1 = m.stats1 || {}; const s2 = m.stats2 || {}; const chartData = [ { label: `${m.n1 || "Jogador 1"} - Pontos Totais`, value: num(s1.total), color: "rgba(190,242,100,.92)" }, { label: `${m.n2 || "Jogador 2"} - Pontos Totais`, value: num(s2.total), color: "rgba(56,189,248,.92)" }, { label: `${m.n1 || "Jogador 1"} - Winners`, value: calcWinners(s1), color: "rgba(167,139,250,.92)" }, { label: `${m.n2 || "Jogador 2"} - Winners`, value: calcWinners(s2), color: "rgba(34,211,238,.92)" }, { label: `${m.n1 || "Jogador 1"} - Break Points`, value: num(s1.break_won), color: "rgba(249,115,22,.92)" }, { label: `${m.n2 || "Jogador 2"} - Break Points`, value: num(s2.break_won), color: "rgba(251,113,133,.92)" } ]; const signature = JSON.stringify(chartData.map(x => x.value)); if (signature === lastChartSignature && pieChart) { buildChartLegend(chartData, chartData.reduce((a, b) => a + b.value, 0)); return; } lastChartSignature = signature; const ctx = document.getElementById("matchChart"); if (!ctx) return; const labels = chartData.map(x => x.label); const values = chartData.map(x => x.value); const colors = chartData.map(x => x.color); const totalAll = values.reduce((a, b) => a + b, 0); buildChartLegend(chartData, totalAll); if (pieChart) { pieChart.data.labels = labels; pieChart.data.datasets[0].data = values; pieChart.data.datasets[0].backgroundColor = colors; pieChart.update("none"); return; } pieChart = new Chart(ctx, { type: "doughnut", data: { labels, datasets: [{ data: values, backgroundColor: colors, borderColor: "#0b1220", borderWidth: 3, hoverOffset: 10, spacing: 2 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: "58%", animation: { duration: 450 }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { const label = context.label || ""; const value = context.raw || 0; const dataTotal = context.dataset.data.reduce((a, b) => a + b, 0); const pct = dataTotal > 0 ? ((value / dataTotal) * 100).toFixed(1) : "0.0"; return `${label}: ${value} (${pct}%)`; } } } } }, plugins: [{ id: "centerText", afterDraw(chart) { const { ctx, chartArea } = chart; if (!chartArea) return; const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0); const x = (chartArea.left + chartArea.right) / 2; const y = (chartArea.top + chartArea.bottom) / 2; ctx.save(); ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = "#f8fafc"; ctx.font = "900 16px Inter, sans-serif"; ctx.fillText("Gráfico da Partida", x, y - 10); ctx.fillStyle = "#94a3b8"; ctx.font = "700 12px Inter, sans-serif"; ctx.fillText(`Total: ${total}`, x, y + 12); ctx.restore(); } }] }); } async function update() { try { const response = await fetch(DB_URL); const m = await response.json(); if (!m) return; currentMatch = m; renderSummary(m); } catch (e) { console.error("Erro ao atualizar relatório:", e); } } function getCategoriaNome(m) { return m.categoriaNome || m.cat || "-"; } function getFormatLabel(code) { const map = { "2_sets_adv_3tb10": "2 sets com vantagem e o 3º set um supertiebreak de 10 pontos", "2_sets_noad_3tb10": "2 sets sem vantagem e o 3º set um supertiebreak de 10 pontos", "1_set_adv_tb10": "1 set com vantagem + um supertiebreak de 10 pontos", "1_set_adv_tb7": "1 set com vantagem com tiebreak de 7 pontos", "1_set_noad_tb7": "1 set sem vantagem com tiebreak de 7 pontos", "1_set_pro_8_adv_tb7": "1 set pro com 8 games com vantagem com tiebreak de 7 pontos", "1_set_pro_8_noad_tb7": "1 set pro com 8 games sem vantagem com tiebreak de 7 pontos" }; return map[code] || "Formato do jogo não informado"; } function renderSummary(m) { const mode = document.getElementById("viewMode").value; const p1Name = m.n1 || "Jogador 1"; const p2Name = m.n2 || "Jogador 2"; const showBoth = mode === "both"; const s1 = m.stats1 || {}; const s2 = m.stats2 || {}; setText("meta-cat", `Categoria: ${getCategoriaNome(m)}`); setText("meta-status", `Status: ${m.status || "-"}`); setText("meta-win", `Vencedor: ${m.win || "-"}`); setText("meta-date", `Data da partida: ${formatDateBR(m.dataPartida)}`); setText("meta-format", `Formato: ${getFormatLabel(m.formatoJogo)}`); if (m.status === "Em andamento" && m.startTime) { const diff = Math.floor((Date.now() - m.startTime) / 1000); setText("meta-duration", `Duração: ${formatTime(diff)}`); } else { setText("meta-duration", `Duração: ${m.duration || "00:00:00"}`); } setText("sum-total", showBoth ? `${num(s1.total)} x ${num(s2.total)}` : mode === "1" ? `${num(s1.total)}` : `${num(s2.total)}`); setText("sum-games", showBoth ? `${num(m.g1)} x ${num(m.g2)}` : mode === "1" ? `${num(m.g1)}` : `${num(m.g2)}`); setText("sum-sets", showBoth ? `${num(m.s1)} x ${num(m.s2)}` : mode === "1" ? `${num(m.s1)}` : `${num(m.s2)}`); const winners1 = calcWinners(s1); const winners2 = calcWinners(s2); const enf1 = calcErrorsNF(s1); const enf2 = calcErrorsNF(s2); setText("sum-winners", showBoth ? `${winners1} x ${winners2}` : mode === "1" ? `${winners1}` : `${winners2}`); setText("sum-enf", showBoth ? `${enf1} x ${enf2}` : mode === "1" ? `${enf1}` : `${enf2}`); setText("sum-bp", showBoth ? `${formatBreakPoints(s1)} x ${formatBreakPoints(s2)}` : mode === "1" ? `${formatBreakPoints(s1)}` : `${formatBreakPoints(s2)}`); const s1p1 = Math.round((num(s1.primeiro_servico_vencidos) / Math.max(1, num(s1.primeiro_servico_total))) * 100); const s2p1 = Math.round((num(s1.segundo_servico_vencidos) / Math.max(1, num(s1.segundo_servico_total))) * 100); const s1p2 = Math.round((num(s2.primeiro_servico_vencidos) / Math.max(1, num(s2.primeiro_servico_total))) * 100); const s2p2 = Math.round((num(s2.segundo_servico_vencidos) / Math.max(1, num(s2.segundo_servico_total))) * 100); setText( "sum-servepct", showBoth ? `${s1p1}%/${s2p1}% x ${s1p2}%/${s2p2}%` : mode === "1" ? `${s1p1}%/${s2p1}%` : `${s1p2}%/${s2p2}%` ); const p1Winner = m.win && m.win === p1Name; const p2Winner = m.win && m.win === p2Name; const p1NameEl = document.getElementById("p1-name"); const p2NameEl = document.getElementById("p2-name"); if (p1NameEl) { p1NameEl.innerHTML = `${p1Name}${p1Winner ? ' <span class="winner-tag">VENCEDOR</span>' : ""}`; } if (p2NameEl) { p2NameEl.innerHTML = `${p2Name}${p2Winner ? ' <span class="winner-tag">VENCEDOR</span>' : ""}`; } setText("p1-badge", p1Name); setText("p2-badge", p2Name); setText("p1-ace", num(s1.ace)); setText("p1-df", num(s1.df)); setText("p1-s1", `${s1p1}%`); setText("p1-s2", `${s2p1}%`); setText("p1-win", `${num(s1.fw)}/${num(s1.bw)}`); setText("p1-ef", num(s1.erro_forcado)); setText("p1-bp", formatBreakPoints(s1)); setText("p1-rede", `${num(s1.rede)}/${num(s1.rede_err)}`); setText("p1-ed", num(s1.erro_devolucao)); setText("p1-pd", num(s1.ponto_devolucao)); setText("p1-lb", `${num(s1.ponto_linha_base)}/${num(s1.erro_linha_base)}`); setText("p1-perf", perfScore(s1).toFixed(1)); setText("p2-ace", num(s2.ace)); setText("p2-df", num(s2.df)); setText("p2-s1", `${s1p2}%`); setText("p2-s2", `${s2p2}%`); setText("p2-win", `${num(s2.fw)}/${num(s2.bw)}`); setText("p2-ef", num(s2.erro_forcado)); setText("p2-bp", formatBreakPoints(s2)); setText("p2-rede", `${num(s2.rede)}/${num(s2.rede_err)}`); setText("p2-ed", num(s2.erro_devolucao)); setText("p2-pd", num(s2.ponto_devolucao)); setText("p2-lb", `${num(s2.ponto_linha_base)}/${num(s2.erro_linha_base)}`); setText("p2-perf", perfScore(s2).toFixed(1)); setText("t-ace1", num(s1.ace)); setText("t-ace2", num(s2.ace)); setText("t-df1", num(s1.df)); setText("t-df2", num(s2.df)); setText("t-fw1", num(s1.fw)); setText("t-fw2", num(s2.fw)); setText("t-bw1", num(s1.bw)); setText("t-bw2", num(s2.bw)); setText("t-enffh1", num(s1.enf_fh)); setText("t-enffh2", num(s2.enf_fh)); setText("t-enfbh1", num(s1.enf_bh)); setText("t-enfbh2", num(s2.enf_bh)); setText("t-rede1", num(s1.rede)); setText("t-rede2", num(s2.rede)); setText("t-redeerr1", num(s1.rede_err)); setText("t-redeerr2", num(s2.rede_err)); setText("t-ef1", num(s1.erro_forcado)); setText("t-ef2", num(s2.erro_forcado)); setText("t-ed1", num(s1.erro_devolucao)); setText("t-ed2", num(s2.erro_devolucao)); setText("t-pd1", num(s1.ponto_devolucao)); setText("t-pd2", num(s2.ponto_devolucao)); setText("t-plb1", num(s1.ponto_linha_base)); setText("t-plb2", num(s2.ponto_linha_base)); setText("t-elb1", num(s1.erro_linha_base)); setText("t-elb2", num(s2.erro_linha_base)); setText("t-bp1", formatBreakPoints(s1)); setText("t-bp2", formatBreakPoints(s2)); setText("t-perf1", perfScore(s1).toFixed(1)); setText("t-perf2", perfScore(s2).toFixed(1)); setText("t-total1", num(s1.total)); setText("t-total2", num(s2.total)); setText("t-g1", num(m.g1)); setText("t-g2", num(m.g2)); setText("t-s1", num(m.s1)); setText("t-s2", num(m.s2)); const p1 = document.getElementById("box-p1"); const p2 = document.getElementById("box-p2"); const comp = document.getElementById("comparisonPanel"); p1.classList.remove("hide", "active"); p2.classList.remove("hide", "active"); comp.classList.remove("hide"); if (mode === "1") { p1.classList.add("active"); p2.classList.add("hide"); comp.classList.add("hide"); } else if (mode === "2") { p2.classList.add("active"); p1.classList.add("hide"); comp.classList.add("hide"); } renderMatchChart(m); } async function gerarPDF() { if (!currentMatch) return; const m = currentMatch; const mode = document.getElementById("viewMode").value; const { jsPDF } = window.jspdf; const doc = new jsPDF("p", "mm", "a4"); const pageW = 210; const margin = 14; const c = { header: [30, 41, 59], accent: [190, 242, 100], blue: [56, 189, 248], text: [248, 250, 252], muted: [148, 163, 184], line: [226, 232, 240], cardBg: [245, 247, 250], dark: [15, 23, 42], greenSoft: [220, 252, 231], blueSoft: [224, 242, 254], purpleSoft: [237, 233, 254], amberSoft: [254, 243, 199], redSoft: [254, 226, 226] }; const s1 = m.stats1 || {}; const s2 = m.stats2 || {}; const pct = (a, b) => `${Math.round((num(a) / Math.max(1, num(b))) * 100)}%`; const safe = (v) => (v ?? "-"); const addHeader = () => { doc.setFillColor(...c.header); doc.roundedRect(margin, 10, pageW - margin * 2, 34, 4, 4, "F"); doc.setFillColor(...c.accent); doc.roundedRect(margin, 10, 6, 34, 2, 2, "F"); doc.setTextColor(...c.accent); doc.setFont("helvetica", "bold"); doc.setFontSize(20); doc.text("RELATÓRIO DA PARTIDA", margin + 12, 21); doc.setTextColor(...c.text); doc.setFont("helvetica", "normal"); doc.setFontSize(11); doc.text(`${m.n1 || "Jogador 1"} x ${m.n2 || "Jogador 2"}`, margin + 12, 29); doc.setTextColor(...c.muted); doc.setFontSize(9); doc.text(`Categoria: ${safe(getCategoriaNome(m))}`, margin + 12, 36); doc.text(`Status: ${safe(m.status)}`, 122, 21); doc.text(`Vencedor: ${safe(m.win)}`, 122, 29); doc.text(`Duração: ${safe(m.duration || "00:00:00")}`, 122, 36); doc.text(`Data: ${formatDateBR(m.dataPartida)}`, 122, 42); }; const addSectionTitle = (title, y) => { doc.setTextColor(...c.blue); doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.text(title, margin, y); doc.setDrawColor(...c.blue); doc.setLineWidth(0.6); doc.line(margin, y + 2, pageW - margin, y + 2); }; const drawMetricCard = (x, y, w, h, title, v1, v2, bg, titleColor) => { doc.setFillColor(...bg); doc.setDrawColor(230, 236, 242); doc.roundedRect(x, y, w, h, 3, 3, "FD"); doc.setTextColor(...titleColor); doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.text(title.toUpperCase(), x + 4, y + 6); doc.setTextColor(15, 23, 42); doc.setFontSize(11); doc.text(`${m.n1 || "Jogador 1"}: ${v1}`, x + 4, y + 13); doc.text(`${m.n2 || "Jogador 2"}: ${v2}`, x + 4, y + 19); }; const drawRow = (y, title, v1, v2) => { doc.setFillColor(250, 251, 253); doc.setDrawColor(...c.line); doc.roundedRect(margin, y, pageW - margin * 2, 12, 2, 2, "FD"); doc.setTextColor(17, 24, 39); doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text(title, margin + 4, y + 8); doc.setFont("helvetica", "normal"); doc.text(String(v1), 95, y + 8); doc.text(String(v2), 150, y + 8); }; let y = 48; addHeader(); addSectionTitle("Resumo Geral", y); y += 7; drawMetricCard(margin, y, 58, 24, "Pontos Totais", num(s1.total), num(s2.total), c.greenSoft, c.dark); drawMetricCard(margin + 61, y, 58, 24, "Games", num(m.g1), num(m.g2), c.blueSoft, c.dark); drawMetricCard(margin + 122, y, 74, 24, "Sets", num(m.s1), num(m.s2), c.purpleSoft, c.dark); y += 30; drawMetricCard(margin, y, 58, 24, "Winners", calcWinners(s1), calcWinners(s2), c.greenSoft, c.dark); drawMetricCard(margin + 61, y, 58, 24, "Erros NF", calcErrorsNF(s1), calcErrorsNF(s2), c.redSoft, c.dark); drawMetricCard(margin + 122, y, 74, 24, "Break Point", formatBreakPoints(s1), formatBreakPoints(s2), c.amberSoft, c.dark); y += 33; addSectionTitle("Estatísticas Principais", y); y += 7; drawRow(y, "Duplas Faltas", num(s1.df), num(s2.df)); y += 14; drawRow(y, "Winners FH/BH", `${num(s1.fw)}/${num(s1.bw)}`, `${num(s2.fw)}/${num(s2.bw)}`); y += 14; drawRow(y, "Erros Não Forçados FH/BH", `${num(s1.enf_fh)}/${num(s1.enf_bh)}`, `${num(s2.enf_fh)}/${num(s2.enf_bh)}`); y += 14; drawRow(y, "Pontos na Rede", num(s1.rede), num(s2.rede)); y += 14; drawRow(y, "Erros na Rede", num(s1.rede_err), num(s2.rede_err)); y += 14; drawRow(y, "Erros Forçados", num(s1.erro_forcado), num(s2.erro_forcado)); y += 14; drawRow(y, "Erros de Devolução", num(s1.erro_devolucao), num(s2.erro_devolucao)); y += 14; drawRow(y, "Pontos de Devolução", num(s1.ponto_devolucao), num(s2.ponto_devolucao)); y += 14; drawRow(y, "Linha de Base", `${num(s1.ponto_linha_base)}/${num(s1.erro_linha_base)}`, `${num(s2.ponto_linha_base)}/${num(s2.erro_linha_base)}`); y += 14; if (y > 250) { doc.addPage(); y = 18; addHeader(); y = 52; } addSectionTitle("Serviço", y); y += 7; drawRow(y, "1º Serviço", pct(s1.primeiro_servico_vencidos, s1.primeiro_servico_total), pct(s2.primeiro_servico_vencidos, s2.primeiro_servico_total)); y += 14; drawRow(y, "2º Serviço", pct(s1.segundo_servico_vencidos, s1.segundo_servico_total), pct(s2.segundo_servico_vencidos, s2.segundo_servico_total)); y += 16; addSectionTitle("Comparativo Final", y); y += 7; drawMetricCard(margin, y, 58, 24, "Performance", perfScore(s1).toFixed(1), perfScore(s2).toFixed(1), c.blueSoft, c.dark); drawMetricCard(margin + 61, y, 58, 24, "Pontos de Devolução", num(s1.ponto_devolucao), num(s2.ponto_devolucao), c.greenSoft, c.dark); drawMetricCard(margin + 122, y, 74, 24, "Linha de Base", num(s1.ponto_linha_base), num(s2.ponto_linha_base), c.purpleSoft, c.dark); y += 33; doc.setTextColor(...c.muted); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.text(`Gerado em: ${new Date().toLocaleString("pt-BR")}`, margin, 285); doc.text("Relatório premium da partida", 150, 285); const fileName = `relatorio_${(m.n1 || "jogador1").replace(/\s+/g, "_")}_vs_${(m.n2 || "jogador2").replace(/\s+/g, "_")}.pdf`; doc.save(fileName); } function renderAll() { if (currentMatch) renderSummary(currentMatch); } loadUIState(); setInterval(update, 1000); update(); </script>
+  <script> const DB_URL = "https://rodrigoteste-1df63-default-rtdb.firebaseio.com/match.json"; const STORAGE_KEYS = { p1: "matchReport_p1Collapsed", p2: "matchReport_p2Collapsed", comp: "matchReport_compCollapsed", chart: "matchReport_chartCollapsed" }; let currentMatch = null; let pieChart = null; let lastChartSignature = ""; function num(v) { return Number(v || 0); } function setText(id, text) { const el = document.getElementById(id); if (el) el.innerText = text; } function formatTime(totalSeconds) { const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0"); const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0"); const s = String(totalSeconds % 60).padStart(2, "0"); return `${h}:${m}:${s}`; } function formatDateBR(value) { if (!value) return "-"; const d = new Date(value + "T00:00:00"); if (isNaN(d.getTime())) return value; return d.toLocaleDateString("pt-BR"); } function formatBreakPoints(st) { const won = num(st?.break_won); const total = num(st?.break_total); return `${won}/${total}`; } function perfScore(st) { const total = num(st?.total); if (total === 0) return 0.0; const wins = num(st?.fw) + num(st?.bw) + num(st?.rede) + num(st?.ace) + num(st?.erro_forcado) + num(st?.ponto_devolucao) + num(st?.ponto_linha_base) + num(st?.break_won); const losses = num(st?.enf) + num(st?.rede_err) + num(st?.df) + num(st?.erro_devolucao) + num(st?.erro_linha_base) + num(st?.break_lost); let score = 5 + ((wins - losses) / Math.max(1, total)) * 3.2 + num(st?.ace) * 0.12 + num(st?.break_won) * 0.25 - num(st?.break_lost) * 0.2; score = Math.max(0, Math.min(10, score)); return Math.round(score * 10) / 10; } function calcWinners(st) { return ( num(st?.ace) + num(st?.rede) + num(st?.fw) + num(st?.bw) + num(st?.ponto_devolucao) + num(st?.ponto_linha_base) ); } function calcErrorsNF(st) { return ( num(st?.df) + num(st?.rede_err) + num(st?.enf_fh) + num(st?.enf_bh) + num(st?.erro_forcado) + num(st?.erro_devolucao) + num(st?.erro_linha_base) ); } function loadUIState() { const p1Collapsed = localStorage.getItem(STORAGE_KEYS.p1) === "1"; const p2Collapsed = localStorage.getItem(STORAGE_KEYS.p2) === "1"; const compCollapsed = localStorage.getItem(STORAGE_KEYS.comp) === "1"; const chartCollapsed = localStorage.getItem(STORAGE_KEYS.chart) === "1"; applyCollapseState(1, p1Collapsed); applyCollapseState(2, p2Collapsed); applyComparisonState(compCollapsed); applyChartState(chartCollapsed); } function saveUIState() { const p1 = document.getElementById("box-p1")?.classList.contains("collapsed"); const p2 = document.getElementById("box-p2")?.classList.contains("collapsed"); const comp = document.getElementById("comparisonBody")?.classList.contains("hide"); const chart = document.getElementById("chartBody")?.classList.contains("hide"); localStorage.setItem(STORAGE_KEYS.p1, p1 ? "1" : "0"); localStorage.setItem(STORAGE_KEYS.p2, p2 ? "1" : "0"); localStorage.setItem(STORAGE_KEYS.comp, comp ? "1" : "0"); localStorage.setItem(STORAGE_KEYS.chart, chart ? "1" : "0"); } function applyCollapseState(player, collapsed) { const box = document.getElementById(`box-p${player}`); const btn = document.getElementById(`toggle-p${player}`); if (!box || !btn) return; box.classList.toggle("collapsed", collapsed); btn.textContent = collapsed ? "Expandir" : "Recolher"; } function applyComparisonState(collapsed) { const body = document.getElementById("comparisonBody"); const btn = document.getElementById("toggle-comparison"); if (!body || !btn) return; body.classList.toggle("hide", collapsed); btn.textContent = collapsed ? "Expandir" : "Recolher"; } function applyChartState(collapsed) { const body = document.getElementById("chartBody"); const btn = document.getElementById("toggle-chart"); if (!body || !btn) return; body.classList.toggle("hide", collapsed); btn.textContent = collapsed ? "Expandir" : "Recolher"; } function togglePlayer(player) { const box = document.getElementById(`box-p${player}`); const btn = document.getElementById(`toggle-p${player}`); if (!box || !btn) return; box.classList.toggle("collapsed"); btn.textContent = box.classList.contains("collapsed") ? "Expandir" : "Recolher"; saveUIState(); } function toggleComparison() { const body = document.getElementById("comparisonBody"); const btn = document.getElementById("toggle-comparison"); if (!body || !btn) return; body.classList.toggle("hide"); btn.textContent = body.classList.contains("hide") ? "Expandir" : "Recolher"; saveUIState(); } function toggleChart() { const body = document.getElementById("chartBody"); const btn = document.getElementById("toggle-chart"); if (!body || !btn) return; body.classList.toggle("hide"); btn.textContent = body.classList.contains("hide") ? "Expandir" : "Recolher"; saveUIState(); } function buildChartLegend(items, totalAll) { const legend = document.getElementById("chartLegend"); if (!legend) return; legend.innerHTML = items.map(item => { const pct = totalAll > 0 ? ((item.value / totalAll) * 100).toFixed(1) : "0.0"; return ` <div class="legend-item"> <span class="legend-color" style="background:${item.color};"></span> <div class="txt"> <div class="k">${item.label}</div> <div class="v">${item.value} • ${pct}%</div> </div> </div> `; }).join(""); } function renderMatchChart(m) { const s1 = m.stats1 || {}; const s2 = m.stats2 || {}; const chartData = [ { label: `${m.n1 || "Jogador 1"} - Pontos Totais`, value: num(s1.total), color: "rgba(190,242,100,.92)" }, { label: `${m.n2 || "Jogador 2"} - Pontos Totais`, value: num(s2.total), color: "rgba(56,189,248,.92)" }, { label: `${m.n1 || "Jogador 1"} - Winners`, value: calcWinners(s1), color: "rgba(167,139,250,.92)" }, { label: `${m.n2 || "Jogador 2"} - Winners`, value: calcWinners(s2), color: "rgba(34,211,238,.92)" }, { label: `${m.n1 || "Jogador 1"} - Break Points`, value: num(s1.break_won), color: "rgba(249,115,22,.92)" }, { label: `${m.n2 || "Jogador 2"} - Break Points`, value: num(s2.break_won), color: "rgba(251,113,133,.92)" } ]; const signature = JSON.stringify(chartData.map(x => x.value)); if (signature === lastChartSignature && pieChart) { buildChartLegend(chartData, chartData.reduce((a, b) => a + b.value, 0)); return; } lastChartSignature = signature; const ctx = document.getElementById("matchChart"); if (!ctx) return; const labels = chartData.map(x => x.label); const values = chartData.map(x => x.value); const colors = chartData.map(x => x.color); const totalAll = values.reduce((a, b) => a + b, 0); buildChartLegend(chartData, totalAll); if (pieChart) { pieChart.data.labels = labels; pieChart.data.datasets[0].data = values; pieChart.data.datasets[0].backgroundColor = colors; pieChart.update("none"); return; } pieChart = new Chart(ctx, { type: "doughnut", data: { labels, datasets: [{ data: values, backgroundColor: colors, borderColor: "#0b1220", borderWidth: 3, hoverOffset: 10, spacing: 2 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: "58%", animation: { duration: 450 }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { const label = context.label || ""; const value = context.raw || 0; const dataTotal = context.dataset.data.reduce((a, b) => a + b, 0); const pct = dataTotal > 0 ? ((value / dataTotal) * 100).toFixed(1) : "0.0"; return `${label}: ${value} (${pct}%)`; } } } } }, plugins: [{ id: "centerText", afterDraw(chart) { const { ctx, chartArea } = chart; if (!chartArea) return; const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0); const x = (chartArea.left + chartArea.right) / 2; const y = (chartArea.top + chartArea.bottom) / 2; ctx.save(); ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = "#f8fafc"; ctx.font = "900 16px Inter, sans-serif"; ctx.fillText("Gráfico da Partida", x, y - 10); ctx.fillStyle = "#94a3b8"; ctx.font = "700 12px Inter, sans-serif"; ctx.fillText(`Total: ${total}`, x, y + 12); ctx.restore(); } }] }); } async function update() { try { const response = await fetch(DB_URL); const m = await response.json(); if (!m) return; currentMatch = m; renderSummary(m); } catch (e) { console.error("Erro ao atualizar relatório:", e); } } function getCategoriaNome(m) { return m.categoriaNome || m.cat || "-"; } function getFormatLabel(code) { const map = { "2_sets_adv_3tb10": "2 sets com vantagem e o 3º set um supertiebreak de 10 pontos", "2_sets_noad_3tb10": "2 sets sem vantagem e o 3º set um supertiebreak de 10 pontos", "1_set_adv_tb10": "1 set com vantagem + um supertiebreak de 10 pontos", "1_set_adv_tb7": "1 set com vantagem com tiebreak de 7 pontos", "1_set_noad_tb7": "1 set sem vantagem com tiebreak de 7 pontos", "1_set_pro_8_adv_tb7": "1 set pro com 8 games com vantagem com tiebreak de 7 pontos", "1_set_pro_8_noad_tb7": "1 set pro com 8 games sem vantagem com tiebreak de 7 pontos" }; return map[code] || "Formato do jogo não informado"; } function renderSummary(m) { const mode = document.getElementById("viewMode").value; const p1Name = m.n1 || "Jogador 1"; const p2Name = m.n2 || "Jogador 2"; const showBoth = mode === "both"; const s1 = m.stats1 || {}; const s2 = m.stats2 || {}; setText("meta-cat", `Categoria: ${getCategoriaNome(m)}`); setText("meta-status", `Status: ${m.status || "-"}`); setText("meta-win", `Vencedor: ${m.win || "-"}`); setText("meta-date", `Data da partida: ${formatDateBR(m.dataPartida)}`); setText("meta-format", `Formato: ${getFormatLabel(m.formatoJogo)}`); if (m.status === "Em andamento" && m.startTime) { const diff = Math.floor((Date.now() - m.startTime) / 1000); setText("meta-duration", `Duração: ${formatTime(diff)}`); } else { setText("meta-duration", `Duração: ${m.duration || "00:00:00"}`); } setText("sum-total", showBoth ? `${num(s1.total)} x ${num(s2.total)}` : mode === "1" ? `${num(s1.total)}` : `${num(s2.total)}`); setText("sum-games", showBoth ? `${num(m.g1)} x ${num(m.g2)}` : mode === "1" ? `${num(m.g1)}` : `${num(m.g2)}`); setText("sum-sets", showBoth ? `${num(m.s1)} x ${num(m.s2)}` : mode === "1" ? `${num(m.s1)}` : `${num(m.s2)}`); const winners1 = calcWinners(s1); const winners2 = calcWinners(s2); const enf1 = calcErrorsNF(s1); const enf2 = calcErrorsNF(s2); setText("sum-winners", showBoth ? `${winners1} x ${winners2}` : mode === "1" ? `${winners1}` : `${winners2}`); setText("sum-enf", showBoth ? `${enf1} x ${enf2}` : mode === "1" ? `${enf1}` : `${enf2}`); setText("sum-bp", showBoth ? `${formatBreakPoints(s1)} x ${formatBreakPoints(s2)}` : mode === "1" ? `${formatBreakPoints(s1)}` : `${formatBreakPoints(s2)}`); const s1p1 = Math.round((num(s1.primeiro_servico_vencidos) / Math.max(1, num(s1.primeiro_servico_total))) * 100); const s2p1 = Math.round((num(s1.segundo_servico_vencidos) / Math.max(1, num(s1.segundo_servico_total))) * 100); const s1p2 = Math.round((num(s2.primeiro_servico_vencidos) / Math.max(1, num(s2.primeiro_servico_total))) * 100); const s2p2 = Math.round((num(s2.segundo_servico_vencidos) / Math.max(1, num(s2.segundo_servico_total))) * 100); setText( "sum-servepct", showBoth ? `${s1p1}%/${s2p1}% x ${s1p2}%/${s2p2}%` : mode === "1" ? `${s1p1}%/${s2p1}%` : `${s1p2}%/${s2p2}%` ); const p1Winner = m.win && m.win === p1Name; const p2Winner = m.win && m.win === p2Name; const p1NameEl = document.getElementById("p1-name"); const p2NameEl = document.getElementById("p2-name"); if (p1NameEl) { p1NameEl.innerHTML = `${p1Name}${p1Winner ? ' <span class="winner-tag">VENCEDOR</span>' : ""}`; } if (p2NameEl) { p2NameEl.innerHTML = `${p2Name}${p2Winner ? ' <span class="winner-tag">VENCEDOR</span>' : ""}`; } setText("p1-badge", p1Name); setText("p2-badge", p2Name); setText("p1-ace", num(s1.ace)); setText("p1-df", num(s1.df)); setText("p1-s1", `${s1p1}%`); setText("p1-s2", `${s2p1}%`); setText("p1-win", `${num(s1.fw)}/${num(s1.bw)}`); setText("p1-ef", num(s1.erro_forcado)); setText("p1-bp", formatBreakPoints(s1)); setText("p1-rede", `${num(s1.rede)}/${num(s1.rede_err)}`); setText("p1-ed", num(s1.erro_devolucao)); setText("p1-pd", num(s1.ponto_devolucao)); setText("p1-lb", `${num(s1.ponto_linha_base)}/${num(s1.erro_linha_base)}`); setText("p1-perf", perfScore(s1).toFixed(1)); setText("p2-ace", num(s2.ace)); setText("p2-df", num(s2.df)); setText("p2-s1", `${s1p2}%`); setText("p2-s2", `${s2p2}%`); setText("p2-win", `${num(s2.fw)}/${num(s2.bw)}`); setText("p2-ef", num(s2.erro_forcado)); setText("p2-bp", formatBreakPoints(s2)); setText("p2-rede", `${num(s2.rede)}/${num(s2.rede_err)}`); setText("p2-ed", num(s2.erro_devolucao)); setText("p2-pd", num(s2.ponto_devolucao)); setText("p2-lb", `${num(s2.ponto_linha_base)}/${num(s2.erro_linha_base)}`); setText("p2-perf", perfScore(s2).toFixed(1)); setText("t-ace1", num(s1.ace)); setText("t-ace2", num(s2.ace)); setText("t-df1", num(s1.df)); setText("t-df2", num(s2.df)); setText("t-fw1", num(s1.fw)); setText("t-fw2", num(s2.fw)); setText("t-bw1", num(s1.bw)); setText("t-bw2", num(s2.bw)); setText("t-enffh1", num(s1.enf_fh)); setText("t-enffh2", num(s2.enf_fh)); setText("t-enfbh1", num(s1.enf_bh)); setText("t-enfbh2", num(s2.enf_bh)); setText("t-rede1", num(s1.rede)); setText("t-rede2", num(s2.rede)); setText("t-redeerr1", num(s1.rede_err)); setText("t-redeerr2", num(s2.rede_err)); setText("t-ef1", num(s1.erro_forcado)); setText("t-ef2", num(s2.erro_forcado)); setText("t-ed1", num(s1.erro_devolucao)); setText("t-ed2", num(s2.erro_devolucao)); setText("t-pd1", num(s1.ponto_devolucao)); setText("t-pd2", num(s2.ponto_devolucao)); setText("t-plb1", num(s1.ponto_linha_base)); setText("t-plb2", num(s2.ponto_linha_base)); setText("t-elb1", num(s1.erro_linha_base)); setText("t-elb2", num(s2.erro_linha_base)); setText("t-bp1", formatBreakPoints(s1)); setText("t-bp2", formatBreakPoints(s2)); setText("t-perf1", perfScore(s1).toFixed(1)); setText("t-perf2", perfScore(s2).toFixed(1)); setText("t-total1", num(s1.total)); setText("t-total2", num(s2.total)); setText("t-g1", num(m.g1)); setText("t-g2", num(m.g2)); setText("t-s1", num(m.s1)); setText("t-s2", num(m.s2)); const p1 = document.getElementById("box-p1"); const p2 = document.getElementById("box-p2"); const comp = document.getElementById("comparisonPanel"); p1.classList.remove("hide", "active"); p2.classList.remove("hide", "active"); comp.classList.remove("hide"); if (mode === "1") { p1.classList.add("active"); p2.classList.add("hide"); comp.classList.add("hide"); } else if (mode === "2") { p2.classList.add("active"); p1.classList.add("hide"); comp.classList.add("hide"); } renderMatchChart(m); } 
+    
+    
+    async function gerarPDF() {
+      if (!currentMatch) return;
+    
+      const m = currentMatch;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF("p", "mm", "a4");
+    
+      const pageW = 210;
+      const pageH = 297;
+      const margin = 14;
+    
+      const c = {
+        header: [30, 41, 59],
+        accent: [190, 242, 100],
+        blue: [56, 189, 248],
+        text: [248, 250, 252],
+        muted: [148, 163, 184],
+        line: [226, 232, 240],
+        dark: [15, 23, 42],
+        greenSoft: [220, 252, 231],
+        blueSoft: [224, 242, 254],
+        purpleSoft: [237, 233, 254],
+        amberSoft: [254, 243, 199],
+        redSoft: [254, 226, 226]
+      };
+    
+      const s1 = m.stats1 || {};
+      const s2 = m.stats2 || {};
+    
+      const safe = (v) => (v ?? "-");
+      const pct = (a, b) => `${Math.round((num(a) / Math.max(1, num(b))) * 100)}%`;
+    
+      const fileName = `relatorio_${(m.n1 || "jogador1").replace(/\s+/g, "_")}_vs_${(m.n2 || "jogador2").replace(/\s+/g, "_")}.pdf`;
+    
+      // =========================
+      // HELPERS DE DESENHO
+      // =========================
+      function addHeader() {
+        doc.setFillColor(...c.header);
+        doc.roundedRect(margin, 10, pageW - margin * 2, 34, 4, 4, "F");
+    
+        doc.setFillColor(...c.accent);
+        doc.roundedRect(margin, 10, 6, 34, 2, 2, "F");
+    
+        doc.setTextColor(...c.accent);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(20);
+        doc.text("RELATÓRIO DA PARTIDA", margin + 12, 21);
+    
+        doc.setTextColor(...c.text);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.text(`${m.n1 || "Jogador 1"} x ${m.n2 || "Jogador 2"}`, margin + 12, 29);
+    
+        doc.setTextColor(...c.muted);
+        doc.setFontSize(9);
+        doc.text(`Categoria: ${safe(getCategoriaNome(m))}`, margin + 12, 36);
+    
+        const xInfo = 122;
+        doc.text(`Status: ${safe(m.status)}`, xInfo, 19);
+        doc.text(`Vencedor: ${safe(m.win)}`, xInfo, 25);
+        doc.text(`Duração: ${safe(m.duration || "00:00:00")}`, xInfo, 31);
+        doc.text(`Data: ${formatDateBR(m.dataPartida)}`, xInfo, 37);
+      }
+    
+      function addSectionTitle(title, y) {
+        doc.setTextColor(...c.blue);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text(title, margin, y);
+    
+        doc.setDrawColor(...c.blue);
+        doc.setLineWidth(0.6);
+        doc.line(margin, y + 2, pageW - margin, y + 2);
+      }
+    
+      function drawMetricCard(x, y, w, h, title, v1, v2, bg) {
+        doc.setFillColor(...bg);
+        doc.setDrawColor(230, 236, 242);
+        doc.roundedRect(x, y, w, h, 3, 3, "FD");
+    
+        doc.setTextColor(...c.dark);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8.5);
+        doc.text(title.toUpperCase(), x + 4, y + 6);
+    
+        doc.setTextColor(15, 23, 42);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.text(`${m.n1 || "Jogador 1"}: ${v1}`, x + 4, y + 13);
+        doc.text(`${m.n2 || "Jogador 2"}: ${v2}`, x + 4, y + 19);
+      }
+    
+      function drawRow(y, title, v1, v2) {
+        doc.setFillColor(250, 251, 253);
+        doc.setDrawColor(...c.line);
+        doc.roundedRect(margin, y, pageW - margin * 2, 12, 2, 2, "FD");
+    
+        doc.setTextColor(17, 24, 39);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.text(title, margin + 4, y + 8);
+    
+        doc.setFont("helvetica", "normal");
+        doc.text(String(v1), 95, y + 8);
+        doc.text(String(v2), 150, y + 8);
+      }
+    
+      function ensureSpace(y, minY = 250) {
+        if (y > minY) {
+          doc.addPage();
+          return 18;
+        }
+        return y;
+      }
+    
+      function addFooter() {
+        doc.setTextColor(...c.muted);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8.5);
+        doc.text(`Gerado em: ${new Date().toLocaleString("pt-BR")}`, margin, 285);
+        doc.text("Relatório premium da partida", 150, 285);
+      }
+    
+      // =========================
+      // FUNÇÃO PARA MONTAR LINHAS SEM DUPLICIDADE
+      // =========================
+      const comparisonRows = [];
+      const usedKeys = new Set();
+    
+      function addComparisonRow(key, label, v1, v2) {
+        if (usedKeys.has(key)) return;
+        usedKeys.add(key);
+        comparisonRows.push([label, v1, v2]);
+      }
+    
+      // =========================
+      // CONSTRUÇÃO DO PDF
+      // =========================
+      let y = 48;
+    
+      addHeader();
+    
+      y += 6;
+    
+      // ---- RESUMO GERAL ----
+      addSectionTitle("Resumo Geral", y);
+      y += 10;
+    
+      const cardW = 58;
+      const cardH = 24;
+    
+      drawMetricCard(margin, y, cardW, cardH, "Pontos Totais", num(s1.total), num(s2.total), c.greenSoft);
+      drawMetricCard(margin + 61, y, cardW, cardH, "Games", num(m.g1), num(m.g2), c.blueSoft);
+      drawMetricCard(margin + 122, y, cardW, cardH, "Sets", num(m.s1), num(m.s2), c.purpleSoft);
+    
+      y += 30;
+    
+      drawMetricCard(margin, y, cardW, cardH, "Winners", calcWinners(s1), calcWinners(s2), c.greenSoft);
+      drawMetricCard(margin + 61, y, cardW, cardH, "Erros NF", calcErrorsNF(s1), calcErrorsNF(s2), c.redSoft);
+      drawMetricCard(margin + 122, y, cardW, cardH, "Break Point", formatBreakPoints(s1), formatBreakPoints(s2), c.amberSoft);
+    
+      y += 33;
+    
+      // ---- ESTATÍSTICAS PRINCIPAIS ----
+      addSectionTitle("Estatísticas Principais", y);
+      y += 7;
+    
+      addComparisonRow("df", "Duplas Faltas", num(s1.df), num(s2.df));
+      addComparisonRow("fw_bh", "Winners FH/BH", `${num(s1.fw)}/${num(s1.bw)}`, `${num(s2.fw)}/${num(s2.bw)}`);
+      addComparisonRow("enf_bh", "Erros Não Forçados FH/BH", `${num(s1.enf_fh)}/${num(s1.enf_bh)}`, `${num(s2.enf_fh)}/${num(s2.enf_bh)}`);
+      addComparisonRow("rede", "Pontos na Rede", num(s1.rede), num(s2.rede));
+      addComparisonRow("rede_err", "Erros na Rede", num(s1.rede_err), num(s2.rede_err));
+      addComparisonRow("erro_forcado", "Erros Forçados", num(s1.erro_forcado), num(s2.erro_forcado));
+      addComparisonRow("erro_devolucao", "Erros de Devolução", num(s1.erro_devolucao), num(s2.erro_devolucao));
+      addComparisonRow("ponto_devolucao", "Pontos de Devolução", num(s1.ponto_devolucao), num(s2.ponto_devolucao));
+      addComparisonRow("linha_base", "Linha de Base", `${num(s1.ponto_linha_base)}/${num(s1.erro_linha_base)}`, `${num(s2.ponto_linha_base)}/${num(s2.erro_linha_base)}`);
+      addComparisonRow("primeiro_servico", "1º Serviço", pct(s1.primeiro_servico_vencidos, s1.primeiro_servico_total), pct(s2.primeiro_servico_vencidos, s2.primeiro_servico_total));
+      addComparisonRow("segundo_servico", "2º Serviço", pct(s1.segundo_servico_vencidos, s1.segundo_servico_total), pct(s2.segundo_servico_vencidos, s2.segundo_servico_total));
+    
+      for (const row of comparisonRows) {
+        drawRow(y, row[0], row[1], row[2]);
+        y += 14;
+      }
+    
+      y = ensureSpace(y);
+    
+      // ---- SERVIÇO ----
+      addSectionTitle("Serviço", y);
+      y += 7;
+    
+      drawRow(y, "Ace", num(s1.ace), num(s2.ace));
+      y += 14;
+    
+      drawRow(
+        y,
+        "1º Serviço",
+        pct(s1.primeiro_servico_vencidos, s1.primeiro_servico_total),
+        pct(s2.primeiro_servico_vencidos, s2.primeiro_servico_total)
+      );
+      y += 14;
+    
+      drawRow(
+        y,
+        "2º Serviço",
+        pct(s1.segundo_servico_vencidos, s1.segundo_servico_total),
+        pct(s2.segundo_servico_vencidos, s2.segundo_servico_total)
+      );
+      y += 20;
+    
+      // ---- COMPARATIVO FINAL ----
+      addSectionTitle("Comparativo Final", y);
+      y += 10;
+    
+      drawMetricCard(margin, y, 58, 24, "Performance", perfScore(s1).toFixed(1), perfScore(s2).toFixed(1), c.blueSoft);
+      drawMetricCard(margin + 61, y, 58, 24, "Pontos de Devolução", num(s1.ponto_devolucao), num(s2.ponto_devolucao), c.greenSoft);
+      drawMetricCard(margin + 122, y, 58, 24, "Linha de Base", num(s1.ponto_linha_base), num(s2.ponto_linha_base), c.purpleSoft);
+    
+      y += 34;
+    
+      // ---- FINAL DO PDF ----
+      addFooter();
+    
+      doc.save(fileName);
+    }
+    
+    function renderAll() { if (currentMatch) renderSummary(currentMatch); } loadUIState(); setInterval(update, 1000); update(); </script>
 </body>
 </html>
